@@ -1,6 +1,9 @@
 LHL Node Skeleton
 =========
 
+## Planning Document
+Viewer Version Google Doc: https://docs.google.com/document/d/1yA0uok8V_d2j2Y4oqvPAFAgFDIdtiUL6uAqVJupVz-I/edit?usp=sharing
+
 ## Project Setup
 
 The following steps are only for _one_ of the group members to perform.
