@@ -1,6 +1,6 @@
 const db = require('../connection');
 
-const getUsersWithListings = () => {
+const getUsersWithVehicles = () => {
   return db.query(`
     SELECT
       Users.UserID,
@@ -20,4 +20,4 @@ const getUsersWithListings = () => {
   });
 };
 
-module.exports = { getUsersWithListings };
+module.exports = { getUsersWithVehicles };
