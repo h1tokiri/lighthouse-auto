@@ -23,10 +23,10 @@ CREATE TABLE Vehicles (
     Year INT NOT NULL,
     VIN VARCHAR(50) UNIQUE NOT NULL,
     Mileage INT NOT NULL,
-    Color VARCHAR(50),
+    Color VARCHAR(50) NOT NULL,
     Transmission VARCHAR(50),
     BodyStyle VARCHAR(100),
-    EngineCylinders INT NOT NULL,
+    EngineCylinders INT,
     Condition VARCHAR(50)
 );
 
@@ -39,7 +39,7 @@ CREATE TABLE Listings (
     DatePosted TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Description TEXT,
     ImageURL VARCHAR(255),
-    ContactEmail VARCHAR(255),
-    ContactPhoneNumber VARCHAR(20),
+    ContactEmail VARCHAR(255) NOT NULL,
+    ContactPhoneNumber VARCHAR(20) NOT NULL,
     ListingAddress TEXT
 );
