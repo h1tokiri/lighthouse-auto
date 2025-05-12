@@ -27,6 +27,8 @@
     "sass": "^1.83.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "daisyui": "^5.0.35",
+    "nodemon": "^3.1.9",
+    "tailwindcss": "^4.1.6"
   }
 }
