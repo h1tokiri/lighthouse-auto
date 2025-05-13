@@ -12,7 +12,9 @@
     "local": "concurrently 'npm:server' 'npm:sass'",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:full": "concurrently 'npm:server' 'npm:sass' 'cd client && npm run dev'"
+
   },
   "author": "Lighthouse Labs",
   "license": "ISC",
@@ -24,11 +26,12 @@
     "express": "^4.21.2",
     "morgan": "^1.10.0",
     "pg": "^8.13.1",
-    "sass": "^1.83.1"
+    "sass": "^1.83.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.21.0"
   },
   "devDependencies": {
-    "daisyui": "^5.0.35",
-    "nodemon": "^3.1.9",
-    "tailwindcss": "^4.1.6"
+    "nodemon": "^3.1.9"
   }
 }

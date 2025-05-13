@@ -68,4 +68,10 @@ button:focus-visible {
 } */
 @tailwind base;
 @tailwind components;
+
+/* insert your daisyUI plugin + themes here */
+@plugin "daisyui" {
+  themes: all;
+}
+
 @tailwind utilities;
