@@ -3,21 +3,23 @@ const db = require('../connection');
 const getUsersWithVehicles = () => {
   return db.query(`
     SELECT
-      Users.UserID,
+      Users.ID AS UserID,
       Users.FirstName,
       Users.LastName,
       Users.Email,
-      Listings.ListingID,
-      Listings.Price,
-      Listings.DatePosted,
-      Listings.Description
+      Vehicles.ID AS VehicleID,
+      Vehicles.Make,
+      Vehicles.Model,
+      Vehicles.Year,
+      Vehicles.Price,
+      Vehicles.Description,
+      VehiclePhotos.PhotoUrl AS PrimaryPhoto
     FROM Users
-    LEFT JOIN Listings ON Users.UserID = Listings.UserID
-    ORDER BY Users.UserID, Listings.ListingID;
+    LEFT JOIN Vehicles ON Users.ID = Vehicles.UserID
+    LEFT JOIN VehiclePhotos ON Vehicles.ID = VehiclePhotos.VehicleID AND VehiclePhotos.IsPrimary = TRUE
+    ORDER BY Users.ID, Vehicles.ID;
   `)
-  .then(data => {
-    return data.rows;
-  });
+  .then(data => data.rows);
 };
 
 module.exports = { getUsersWithVehicles };

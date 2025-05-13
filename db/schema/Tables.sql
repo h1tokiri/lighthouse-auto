@@ -1,5 +1,5 @@
 -- Drop existing tables if they exist
-DROP TABLE IF EXISTS SavedVehicle CASCADE;
+DROP TABLE IF EXISTS SavedVehicles CASCADE;
 DROP TABLE IF EXISTS Vehicles CASCADE;
 DROP TABLE IF EXISTS Users CASCADE;
 DROP TABLE IF EXISTS VehiclePhotos CASCADE;

@@ -10,9 +10,13 @@ const getVehiclesByPriceRange = (minPrice, maxPrice) => {
       Vehicles.Transmission,
       Vehicles.BodyStyle,
       Vehicles.Condition,
-      VehiclePhotos.PhotoUrl AS PrimaryPhoto
+      VehiclePhotos.PhotoUrl AS PrimaryPhoto,
+      Users.FirstName AS SellerFirstName,
+      Users.LastName AS SellerLastName,
+      Users.Email AS SellerEmail
     FROM Vehicles
     LEFT JOIN VehiclePhotos ON Vehicles.ID = VehiclePhotos.VehicleID AND VehiclePhotos.IsPrimary = TRUE
+    JOIN Users ON Vehicles.UserID = Users.ID
     WHERE Vehicles.Price BETWEEN $1 AND $2
     ORDER BY Vehicles.Price ASC;
   `, [minPrice, maxPrice])
