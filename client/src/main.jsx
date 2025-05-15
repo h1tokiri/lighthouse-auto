@@ -11,15 +11,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css"; // your Tailwind directives
 import { BrowserRouter } from "react-router-dom";
-import {
-  Button,
-  Card,
-  Input,
-  Select,
-  Alert,
-  Modal,
-  Avatar,
-} from "./components/ui";
+import * as UI from "./components/ui"; // Import all UI components as a namespace
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
