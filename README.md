@@ -4,6 +4,9 @@
 
 Viewer Version Google Doc: https://docs.google.com/document/d/1yA0uok8V_d2j2Y4oqvPAFAgFDIdtiUL6uAqVJupVz-I/edit?usp=sharing
 
+## Wireframe
+From the one and only Bill: https://www.figma.com/design/cybKwbf1CbHneAm9HrTeC5/Homepage?node-id=0-1&t=ibVLBLWGko6XMTIT-1
+
 ## Project Setup
 
 The following steps are only for _one_ of the group members to perform.
