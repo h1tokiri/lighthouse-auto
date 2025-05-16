@@ -3,6 +3,7 @@ import React from "react";
 import "./index.css"; // or remove if already imported in main.jsx
 import { Routes, Route } from "react-router-dom";
 import * as UI from "./components/ui"; // Import all UI components as a namespace
+import DetailedListingsPage from './pages/DetailedListingsPage';
 
 export default function App() {
   return (
@@ -11,6 +12,9 @@ export default function App() {
         🚗 Welcome to Lighthouse Auto!
       </h1>
       <UI.Button>Click me</UI.Button>
+      <Routes>
+        <Route path="/vehicles/:id" element={<DetailedListingsPage />} />
+      </Routes>
     </div>
   );
 }
