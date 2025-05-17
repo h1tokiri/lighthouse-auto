@@ -21,6 +21,7 @@ import "./index.css";
 import { Routes, Route } from "react-router-dom";
 import * as UI from "./components/ui";
 import DetailedListingsPage from "./pages/DetailedListingsPage";
+import CreateVehiclePage from "./pages/CreateVehiclePage";
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
       </header>
       <main className="app-main">
         <Routes>
+          <Route path="/vehicles/new" element={<CreateVehiclePage />} />
           <Route path="/vehicles/:id" element={<DetailedListingsPage />} />
         </Routes>
       </main>
