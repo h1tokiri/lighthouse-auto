@@ -35,15 +35,19 @@
 // export default App
 
 // src/App.jsx
-import React from "react";
-import "./index.css"; // or remove if already imported in main.jsx
+// src/App.jsx
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './components/homepage';
 
-export default function App() {
+const App = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold text-blue-600">
-        🚗 Welcome to Lighthouse Auto!
-      </h1>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </Router>
   );
-}
+};
+
+export default App;
