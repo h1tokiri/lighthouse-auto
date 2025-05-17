@@ -30,6 +30,9 @@ The following steps are only for _one_ of the group members to perform.
 4. Reset database: `npm run db:reset`
 
 - Check the db folder to see what gets created and seeded in the DB
+- psql labber
+- \c lhautos
+- separate terminal, npm run db:reset
 
 5. Run the server: `npm run local`
 
