@@ -103,27 +103,51 @@ button:focus-visible {
 }
 
 .create-vehicle-form {
-  max-width: 600px;
+  max-width: 480px;
   margin: 2rem auto;
   background: #fff;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+}
+
 .create-vehicle-form label {
   display: block;
-  margin-top: 1rem;
   font-weight: bold;
+  margin-bottom: 0.25rem;
 }
-.create-vehicle-form input {
+
+.create-vehicle-form input,
+.create-vehicle-form textarea {
   width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.25rem;
+  padding: 0.4rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
 }
+
+.description-textarea {
+  width: 100%;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.photo-caption-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .create-vehicle-form button {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   padding: 0.75rem 1.5rem;
   background: #2563eb;
   color: #fff;
@@ -131,4 +155,98 @@ button:focus-visible {
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.detailed-listing {
+  max-width: 700px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.photo-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.vehicle-photo {
+  width: 100%;
+  max-width: 600px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.carousel-arrow {
+  background: rgba(128,128,128,0.25); /* semi-transparent gray */
+  color: #444;
+  border: none;
+  border-radius: 3px;   /* Less rounded corners */
+  width: 24px;
+  height: 60px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 2;
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s, background 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: static;
+  margin: 0 1rem;
+}
+
+.carousel-arrow.left {
+  /* No need for left positioning */
+}
+
+.carousel-arrow.right {
+  /* No need for right positioning */
+}
+
+.carousel-arrow:hover {
+  opacity: 1;
+  background: rgba(128,128,128,0.4);
+}
+
+.photo-carousel img.vehicle-photo {
+  flex-shrink: 0;
+}
+
+.photo-caption {
+  text-align: center;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.vehicle-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.vehicle-details {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+.vehicle-details li {
+  margin-bottom: 0.5rem;
+}
+
+.photo-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  border: 1px solid #ccc;
 }

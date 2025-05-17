@@ -4,6 +4,9 @@ const db = require('../db'); // Adjust path if needed
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }); // You can configure this as needed
 
+// Middleware to parse JSON bodies
+router.use(express.json());
+
 // GET /api/vehicles/:id - get a single vehicle by ID
 router.get('/:id', async (req, res) => {
   try {
@@ -27,10 +30,9 @@ router.get('/:id', async (req, res) => {
 // POST /api/vehicles - create a new vehicle
 router.post('/', async (req, res) => {
   try {
-    const userid = req.session.userId; // or however you store the logged-in user
-    if (!userid) {
-      return res.status(401).json({ error: 'Not authenticated' });
-    }
+    console.log('Received body:', req.body); // Log the incoming data
+    // TEMP: Hardcode user ID for testing
+    const userid = 1; // Replace with a valid user ID from your Users table
     const {
       make, model, year, price, vin, mileage, color,
       transmission, bodystyle, enginecylinders, condition,
@@ -46,6 +48,7 @@ router.post('/', async (req, res) => {
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
+    console.error('Error in /api/vehicles:', err); // Log the error details
     res.status(500).json({ error: err.message });
   }
 });
