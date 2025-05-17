@@ -8,14 +8,10 @@
 //     themes: ["cupcake"],
 //   },
 // };
-
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
   theme: { extend: {} },
-  plugins: [
-    require("daisyui"),
-    require("@tailwindcss/typography"), // ← add this
-  ],
+  plugins: [require("daisyui")], // Remove the typography plugin
   daisyui: {
     themes: ["all"],
   },
