@@ -117,6 +117,7 @@ router.delete('/vehiclephotos/:id', async (req, res) => {
     await db.query('DELETE FROM vehiclephotos WHERE id = $1', [id]);
     res.sendStatus(204);
   } catch (err) {
+    console.error('Error deleting photo:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -144,6 +145,19 @@ router.put('/:id', async (req, res) => {
     );
     res.sendStatus(204);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update photo caption by ID
+router.put('/vehiclephotos/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { caption } = req.body;
+    await db.query('UPDATE vehiclephotos SET caption = $1 WHERE id = $2', [caption, id]);
+    res.sendStatus(204);
+  } catch (err) {
+    console.error('Error updating caption:', err);
     res.status(500).json({ error: err.message });
   }
 });

@@ -380,3 +380,10 @@ button:focus-visible {
   padding: 0.4rem 1rem;
   cursor: pointer;
 }
+.caption-input {
+  background: #fff;
+  color: #222;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+}

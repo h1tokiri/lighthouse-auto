@@ -9,6 +9,7 @@ const EditVehiclePage = () => {
   const [photos, setPhotos] = useState([]);
   const [newPhotos, setNewPhotos] = useState([]);
   const [newCaptions, setNewCaptions] = useState([]);
+  const [editingCaptions, setEditingCaptions] = useState({});
 
   useEffect(() => {
     fetch(`/api/vehicles/${id}`)
@@ -26,7 +27,7 @@ const EditVehiclePage = () => {
 
   const handlePhotoDelete = async (photoId) => {
     if (!window.confirm('Delete this photo?')) return;
-    await fetch(`/api/vehiclephotos/${photoId}`, { method: 'DELETE' });
+    await fetch(`/api/vehicles/vehiclephotos/${photoId}`, { method: 'DELETE' });
     setPhotos(photos.filter(p => p.id !== photoId));
   };
 
@@ -58,7 +59,9 @@ const EditVehiclePage = () => {
     const formData = new FormData();
     newPhotos.forEach((photo, idx) => {
       formData.append('photos', photo);
-      formData.append('captions', newCaptions[idx] || '');
+    });
+    newCaptions.forEach(caption => {
+      formData.append('captions', caption);
     });
     const res = await fetch(`/api/vehicles/${id}/photos`, {
       method: 'POST',
@@ -69,6 +72,26 @@ const EditVehiclePage = () => {
       setPhotos([...photos, ...uploaded]);
       setNewPhotos([]);
       setNewCaptions([]);
+    }
+  };
+
+  const handleCaptionChange = (photoId, value) => {
+    setEditingCaptions({ ...editingCaptions, [photoId]: value });
+  };
+
+  const handleUpdateCaption = async (photoId) => {
+    const newCaption = editingCaptions[photoId];
+    if (typeof newCaption !== 'string') return;
+const res = await fetch(`/api/vehicles/vehiclephotos/${photoId}`, {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ caption: newCaption }),
+});
+    if (res.ok) {
+      setPhotos(photos.map(p =>
+        p.id === photoId ? { ...p, caption: newCaption } : p
+      ));
+      setEditingCaptions({ ...editingCaptions, [photoId]: undefined });
     }
   };
 
@@ -84,8 +107,27 @@ const EditVehiclePage = () => {
         {photos.map(photo => (
           <div key={photo.id} className="photo-thumb">
             <img src={`http://localhost:3001/${photo.photourl}`} alt={photo.caption} width={120} />
-            <div>{photo.caption}</div>
-            <button type="button" className="delete-photo-btn" onClick={() => handlePhotoDelete(photo.id)}>Delete</button>
+            <input
+              type="text"
+              value={editingCaptions[photo.id] !== undefined ? editingCaptions[photo.id] : photo.caption}
+              onChange={e => handleCaptionChange(photo.id, e.target.value)}
+              style={{ marginTop: '0.5rem', width: '100%' }}
+            />
+            <button
+              type="button"
+              className="submit-btn"
+              style={{ marginTop: '0.25rem', marginBottom: '0.25rem' }}
+              onClick={() => handleUpdateCaption(photo.id)}
+            >
+              Update Caption
+            </button>
+            <button
+              type="button"
+              className="delete-photo-btn"
+              onClick={() => handlePhotoDelete(photo.id)}
+            >
+              Delete
+            </button>
             {photo.isprimary && <span className="primary-badge">Primary</span>}
           </div>
         ))}
@@ -106,6 +148,7 @@ const EditVehiclePage = () => {
             <span>{photo.name}</span>
             <input
               type="text"
+              className="caption-input"
               placeholder="Caption"
               value={newCaptions[idx] || ''}
               onChange={e => handleNewCaptionChange(idx, e.target.value)}

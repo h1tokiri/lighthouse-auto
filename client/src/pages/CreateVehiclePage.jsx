@@ -167,6 +167,7 @@ export default function CreateVehiclePage() {
               src={URL.createObjectURL(photo)}
               alt={`Preview ${photo.name}`}
               className="photo-thumb"
+              style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 6 }}
             />
             <span>{photo.name}</span>
             <input
@@ -174,6 +175,7 @@ export default function CreateVehiclePage() {
               placeholder="Caption"
               value={captions[idx] || ''}
               onChange={e => handleCaptionChange(idx, e.target.value)}
+              style={{ width: 120, marginLeft: 8 }}
             />
           </div>
         ))}
