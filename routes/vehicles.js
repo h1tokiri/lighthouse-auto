@@ -7,6 +7,30 @@ const upload = multer({ dest: 'uploads/' }); // You can configure this as needed
 // Middleware to parse JSON bodies
 router.use(express.json());
 
+// Middleware to get user ID (replace with your auth logic)
+function requireUser(req, res, next) {
+  if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+  next();
+}
+
+// --- Place /my-vehicles route FIRST ---
+router.get('/my-vehicles', async (req, res) => {
+  console.log('--- /my-vehicles route hit ---');
+  try {
+    const vehicles = await db.query(`
+      SELECT v.id, v.make, v.model, v.year, v.price,
+        (SELECT photourl FROM vehiclephotos WHERE vehicleid = v.id AND isprimary = TRUE LIMIT 1) AS "primaryPhoto"
+      FROM vehicles v
+      WHERE v.userid = 1
+      ORDER BY v.createdon DESC
+    `);
+    res.json(vehicles.rows);
+  } catch (err) {
+    console.error('Error in /my-vehicles:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/vehicles/:id - get a single vehicle by ID
 router.get('/:id', async (req, res) => {
   try {
@@ -30,9 +54,8 @@ router.get('/:id', async (req, res) => {
 // POST /api/vehicles - create a new vehicle
 router.post('/', async (req, res) => {
   try {
-    console.log('Received body:', req.body); // Log the incoming data
-    // TEMP: Hardcode user ID for testing
-    const userid = 1; // Replace with a valid user ID from your Users table
+    console.log('Received body:', req.body);
+    const userid = 1; // Hardcoded for now
     const {
       make, model, year, price, vin, mileage, color,
       transmission, bodystyle, enginecylinders, condition,
@@ -48,7 +71,7 @@ router.post('/', async (req, res) => {
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error('Error in /api/vehicles:', err); // Log the error details
+    console.error('Error in /api/vehicles:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -70,6 +93,56 @@ router.post('/:id/photos', upload.array('photos'), async (req, res) => {
 
     const results = await Promise.all(photoPromises);
     res.status(201).json(results.map(r => r.rows[0]));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete a vehicle
+router.delete('/:id', requireUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { id } = req.params;
+    await db.query('DELETE FROM vehicles WHERE id = $1 AND userid = $2', [id, userId]);
+    res.sendStatus(204);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete a photo by ID
+router.delete('/vehiclephotos/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await db.query('DELETE FROM vehiclephotos WHERE id = $1', [id]);
+    res.sendStatus(204);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update vehicle for user 1
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      make, model, year, price, mileage, color,
+      transmission, bodystyle, enginecylinders,
+      condition, description, listingaddress
+    } = req.body;
+    await db.query(
+      `UPDATE vehicles SET
+        make = $1, model = $2, year = $3, price = $4, mileage = $5, color = $6,
+        transmission = $7, bodystyle = $8, enginecylinders = $9,
+        condition = $10, description = $11, listingaddress = $12
+      WHERE id = $13 AND userid = 1`,
+      [
+        make, model, year, price, mileage, color,
+        transmission, bodystyle, enginecylinders,
+        condition, description, listingaddress, id
+      ]
+    );
+    res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
