@@ -7,6 +7,8 @@ const EditVehiclePage = () => {
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [photos, setPhotos] = useState([]);
+  const [newPhotos, setNewPhotos] = useState([]);
+  const [newCaptions, setNewCaptions] = useState([]);
 
   useEffect(() => {
     fetch(`/api/vehicles/${id}`)
@@ -38,6 +40,38 @@ const EditVehiclePage = () => {
     navigate('/my-vehicles');
   };
 
+  const handleNewPhotoChange = e => {
+    const files = Array.from(e.target.files);
+    setNewPhotos(files);
+    setNewCaptions(Array(files.length).fill(''));
+  };
+
+  const handleNewCaptionChange = (idx, value) => {
+    const updated = [...newCaptions];
+    updated[idx] = value;
+    setNewCaptions(updated);
+  };
+
+  const handleUploadPhotos = async e => {
+    e.preventDefault();
+    if (newPhotos.length === 0) return;
+    const formData = new FormData();
+    newPhotos.forEach((photo, idx) => {
+      formData.append('photos', photo);
+      formData.append('captions', newCaptions[idx] || '');
+    });
+    const res = await fetch(`/api/vehicles/${id}/photos`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (res.ok) {
+      const uploaded = await res.json();
+      setPhotos([...photos, ...uploaded]);
+      setNewPhotos([]);
+      setNewCaptions([]);
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (!form) return <div>Vehicle not found.</div>;
 
@@ -57,6 +91,35 @@ const EditVehiclePage = () => {
         ))}
       </div>
 
+      {/* Add Photos input and button go here */}
+      <form onSubmit={handleUploadPhotos} style={{ marginBottom: '2rem' }}>
+        <label>Add Photos:</label>
+        <input type="file" multiple accept="image/*" onChange={handleNewPhotoChange} />
+        {newPhotos.map((photo, idx) => (
+          <div key={idx} className="photo-caption-row">
+            <img
+              src={URL.createObjectURL(photo)}
+              alt={`Preview ${photo.name}`}
+              className="photo-thumb"
+              width={80}
+            />
+            <span>{photo.name}</span>
+            <input
+              type="text"
+              placeholder="Caption"
+              value={newCaptions[idx] || ''}
+              onChange={e => handleNewCaptionChange(idx, e.target.value)}
+            />
+          </div>
+        ))}
+        {newPhotos.length > 0 && (
+          <button type="submit" className="submit-btn" style={{ marginTop: '0.5rem' }}>
+            Upload Photos
+          </button>
+        )}
+      </form>
+
+      {/* Main vehicle edit form fields below */}
       <form className="vehicle-form" onSubmit={handleSubmit}>
         {/* 2 fields per row */}
         <div className="form-row-2">
