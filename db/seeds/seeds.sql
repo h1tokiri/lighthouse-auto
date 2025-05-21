@@ -15,12 +15,10 @@ INSERT INTO Users (FirstName, LastName, Email, PhoneNumber, UserName, Password, 
 INSERT INTO Vehicles (UserID, Make, Model, Year, Price, VIN, Mileage, Color, Transmission, BodyStyle, EngineCylinders, Condition, Description, ListingAddress) VALUES
 (1, 'Toyota', 'sienna', 2015, 18999.00, 'VIN0000000001', 45000, 'White', 'Automatic', 'Sedan', 4, 'Used', 'Well-maintained, single owner, no accidents.', '100 Main St, Toronto, ON'),
 (1, 'Audi', 'A6', 2007, 4700.00, NULL, 204000, 'silver', 'automatic', 'sedan', 6, 'fair', 'Great car, new brakes, tires and a fresh oil change. $4700/OBO/Trade', 'Parksville B.C.'),
-(1, 'BMW', '550i'gt, 2002, 5000.00, NULL, 165000, 'Space Gray', 'Automatic', 'Sedan', 8, 'Good', 'Top trim package', 'Parksville B.C.'),
-(2, 'Honda', 'Crv
-', 2020, 20999.00, 'VIN0000000002', 30000, 'Black', 'Manual', 'Sedan', 4, 'Used', 'Sport trim with recent tire replacement.', '200 Queen St W, Toronto, ON'),
-(3, 'Ford', 'escape
-, 2025 27999.00, 'VIN0000000003', 60000, 'Blue', 'Automatic', 'Truck', 6, 'Used', 'XLT package, tow hitch included.', '300 King St E, Toronto, ON'),
-(4, 'Tesla', 'Model x, 2021, 39999.00, 'VIN0000000004', 15000, 'Red', 'Automatic', 'Sedan', 0, 'Certified Pre-Owned', 'Long range battery, Autopilot included.', '400 Yonge St, Toronto, ON'),
+(1, 'BMW', '550i GT', 2002, 5000.00, NULL, 165000, 'Space Gray', 'Automatic', 'Sedan', 8, 'Good', 'Top trim package', 'Parksville B.C.'),
+(2, 'Honda', 'CRV', 2020, 20999.00, 'VIN0000000002', 30000, 'Black', 'Manual', 'Sedan', 4, 'Used', 'Sport trim with recent tire replacement.', '200 Queen St W, Toronto, ON'),
+(3, 'Ford', 'Escape', 2025, 27999.00, 'VIN0000000003', 60000, 'Blue', 'Automatic', 'Truck', 6, 'Used', 'XLT package, tow hitch included.', '300 King St E, Toronto, ON'),
+(4, 'Tesla', 'Model X', 2021, 39999.00, 'VIN0000000004', 15000, 'Red', 'Automatic', 'Sedan', 0, 'Certified Pre-Owned', 'Long range battery, Autopilot included.', '400 Yonge St, Toronto, ON'),
 (5, 'BMW', '3 Series', 2019, 31999.00, 'VIN0000000005', 25000, 'Grey', 'Automatic', 'Sedan', 4, 'Used', 'Premium package with heated seats.', '500 Bloor St W, Toronto, ON'),
 (6, 'Audi', 'A4', 2018, 28999.00, 'VIN0000000006', 35000, 'White', 'Automatic', 'Sedan', 4, 'Certified Pre-Owned', 'Includes virtual cockpit display.', '600 Spadina Ave, Toronto, ON'),
 (7, 'Mercedes-Benz', 'C300', 2020, 34999.00, 'VIN0000000007', 22000, 'Black', 'Automatic', 'Sedan', 4, 'Used', 'AMG line exterior package.', '700 Dundas St W, Toronto, ON'),
