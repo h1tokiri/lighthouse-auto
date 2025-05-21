@@ -18,9 +18,13 @@
 
 import React from "react";
 import "./index.css";
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
 import * as UI from "./components/ui";
 import DetailedListingsPage from "./pages/DetailedListingsPage";
+import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
+import RegisterPage from "./pages/RegisterPage";
 
 export default function App() {
   return (
@@ -31,6 +35,9 @@ export default function App() {
       </header>
       <main className="app-main">
         <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/vehicles/:id" element={<DetailedListingsPage />} />
         </Routes>
       </main>
