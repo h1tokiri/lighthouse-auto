@@ -8,10 +8,11 @@ import { Button } from 'src/components/ui';
 
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css"; // your Tailwind directives
-import { BrowserRouter } from "react-router-dom";
 import * as UI from "./components/ui"; // Import all UI components as a namespace
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -20,3 +21,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
