@@ -24,7 +24,7 @@ CREATE TABLE Vehicles (
     Model VARCHAR(100) NOT NULL,
     Year INT NOT NULL,
     Price DECIMAL(10,2) NOT NULL,
-    VIN VARCHAR(50) UNIQUE NOT NULL,
+    VIN VARCHAR(50) UNIQUE,
     Mileage INT NOT NULL,
     Color VARCHAR(50) NOT NULL,
     Transmission VARCHAR(50),

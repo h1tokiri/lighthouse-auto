@@ -1,26 +1,11 @@
-// import React from "react";
-// import "./index.css";
-// import { Routes, Route } from "react-router-dom";
-// import * as UI from "./components/ui";
-// import DetailedListingsPage from "./pages/DetailedListingsPage";
-
-// const App = () => {
-//   return (
-//     <Router>
-//       <Routes>
-//         <Route path="/" element={<HomePage />} />
-//       </Routes>
-//     </Router>
-//   );
-// };
-
-// export default App;
-
 import React from "react";
 import "./index.css";
 import { Routes, Route } from "react-router-dom";
 import * as UI from "./components/ui";
 import DetailedListingsPage from "./pages/DetailedListingsPage";
+import CreateVehiclePage from "./pages/CreateVehiclePage";
+import EditVehiclePage from "./pages/editVehiclePage";
+import MyVehiclesPage from "./pages/MyVehiclesPage";
 
 export default function App() {
   return (
@@ -31,7 +16,10 @@ export default function App() {
       </header>
       <main className="app-main">
         <Routes>
+          <Route path="/vehicles/new" element={<CreateVehiclePage />} />
           <Route path="/vehicles/:id" element={<DetailedListingsPage />} />
+          <Route path="/vehicles/edit/:id" element={<EditVehiclePage />} />
+          <Route path="/my-vehicles" element={<MyVehiclesPage />} />
         </Routes>
       </main>
     </div>
