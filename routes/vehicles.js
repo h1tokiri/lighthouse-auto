@@ -6,7 +6,20 @@ const db = require('../db'); // Adjust path if needed
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const vehicleResult = await db.query('SELECT * FROM vehicles WHERE id = $1', [id]);
+    const vehicleResult = await db.query(
+    //  Tiago - Beginning
+    // 'SELECT * FROM vehicles WHERE id = $1'
+      `
+      SELECT
+        v.*,
+        u.email as user_email,
+        u.phonenumber as user_phone
+      FROM vehicles v
+      JOIN users u ON v.userid = u.id
+      WHERE v.id = $1
+    `
+    // Tiago - End
+      , [id]);
     if (vehicleResult.rows.length === 0) {
       return res.status(404).json({ error: 'Vehicle not found' });
     }
