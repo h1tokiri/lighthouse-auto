@@ -33,12 +33,19 @@ The following steps are only for _one_ of the group members to perform.
 - psql labber
 - \c lhautos
 - separate terminal, npm run db:reset
+- If running into database issues
+- psql -U labber
+- DROP DATABASE IF EXISTS lhautos;
+- CREATE DATABASE lhautos OWNER labber;
+- \c lhautos
+- \q
+- npm run db:reset
 
-5. Run the server: `npm run local`
+5. Run the server: `npm run dev:full`
 
 - Note: nodemon is used, so you should not have to restart your server
 
-6. Visit [`http://localhost:8080/`](http://localhost:8080/)
+6. Visit [`http://localhost:8080/`](http://localhost:5173/)
 
 ## Warnings & Tips
 
