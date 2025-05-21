@@ -18,6 +18,7 @@ app.set("view engine", "ejs");
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 app.use(morgan("dev"));
 app.use(express.static("public"));
+app.use('/uploads', express.static('uploads'));
 
 // Separated Routes for each Resource
 const userApiRoutes = require("./routes/users-api");
