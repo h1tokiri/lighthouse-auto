@@ -30,6 +30,9 @@ The following steps are only for _one_ of the group members to perform.
 4. Reset database: `npm run db:reset`
 
 - Check the db folder to see what gets created and seeded in the DB
+- psql labber
+- \c lhautos
+- separate terminal, npm run db:reset
 - If running into database issues
 - psql -U labber
 - DROP DATABASE IF EXISTS lhautos;
