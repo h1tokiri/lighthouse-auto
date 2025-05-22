@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from './Navbar';
-import ListingCard from './ListingCard';
+import React, { useEffect, useState } from "react";
+import Navbar from "./Navbar";
+import ListingCard from "./ListingCard";
 
 const HomePage = () => {
   const [listings, setListings] = useState([]);
@@ -8,18 +8,18 @@ const HomePage = () => {
   useEffect(() => {
     const dummyData = Array.from({ length: 10 }, (_, i) => ({
       id: i + 1,
-      make: 'Make',
-      model: 'Model',
+      make: "Make",
+      model: "Model",
       price: 0,
       mileage: 0,
-      photoUrl: ''
+      photoUrl: "",
     }));
     setListings(dummyData);
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="max-w-screen-xl mx-auto px-4">
         <h1 className="text-3xl font-bold text-blue-600 my-6">Recent Listings</h1>
 
