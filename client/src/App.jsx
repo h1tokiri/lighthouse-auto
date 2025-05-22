@@ -32,10 +32,9 @@
 // }
 
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./index.css";
 import { AuthProvider } from "./contexts/AuthContext";
-import * as UI from "./components/ui";
 import Navbar from "./components/Navbar";
 import HomePage from "./components/HomePage";
 import DetailedListingsPage from "./pages/DetailedListingsPage";

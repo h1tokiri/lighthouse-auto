@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext'; // <-- Add this
 import { useNavigate } from "react-router-dom";
 
 const initialState = {
@@ -21,7 +22,9 @@ export default function CreateVehiclePage() {
   const [form, setForm] = useState(initialState);
   const [photos, setPhotos] = useState([]);
   const [captions, setCaptions] = useState([]);
-  const [message, setMessage] = useState("");
+  const [photoPreviews, setPhotoPreviews] = useState([]);
+  const [message, setMessage] = useState('');
+  const { user } = useAuth(); // <-- Add this
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -31,7 +34,8 @@ export default function CreateVehiclePage() {
   const handlePhotoChange = (e) => {
     const files = Array.from(e.target.files);
     setPhotos(files);
-    setCaptions(Array(files.length).fill(""));
+    setCaptions(Array(files.length).fill(''));
+    setPhotoPreviews(files.map(file => URL.createObjectURL(file))); // <-- Add this
   };
 
   const handleCaptionChange = (idx, value) => {
@@ -44,9 +48,12 @@ export default function CreateVehiclePage() {
     e.preventDefault();
     setMessage("");
     // 1. Create vehicle
-    const res = await fetch("/api/vehicles", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch('/api/vehicles', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
+      },
       body: JSON.stringify(form),
     });
     if (!res.ok) {
@@ -59,8 +66,8 @@ export default function CreateVehiclePage() {
     if (photos.length > 0) {
       const formData = new FormData();
       photos.forEach((photo, idx) => {
-        formData.append("photos", photo);
-        formData.append("captions", captions[idx] || "");
+        formData.append('photos', photo);
+        formData.append('captions[]', captions[idx] || ''); // <-- Use array notation
       });
       await fetch(`/api/vehicles/${vehicle.id}/photos`, {
         method: "POST",
@@ -98,7 +105,12 @@ export default function CreateVehiclePage() {
           </div>
           <div>
             <label>VIN:</label>
-            <input name="vin" value={form.vin} onChange={handleChange} />
+            <input
+              name="vin"
+              value={form.vin}
+              onChange={handleChange}
+              placeholder="Optional" // <-- Add this line
+            />
           </div>
           <div>
             <label>Mileage:</label>
@@ -176,16 +188,30 @@ export default function CreateVehiclePage() {
           <input type="file" multiple accept="image/*" onChange={handlePhotoChange} />
         </div>
         {photos.map((photo, idx) => (
-          <div key={idx} className="photo-caption-row">
-            <img
-              src={URL.createObjectURL(photo)}
-              alt={`Preview ${photo.name}`}
-              className="photo-thumb"
-              style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 6 }}
-            />
-            <span>{photo.name}</span>
+          <div key={idx} style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+            {photoPreviews[idx] && (
+              <img
+                src={photoPreviews[idx]}
+                alt={`preview-${idx}`}
+                style={{ width: 80, height: 60, objectFit: "cover", marginRight: 8, borderRadius: 4, border: "1px solid #ccc" }}
+              />
+            )}
+//           <div key={idx} className="photo-caption-row">
+//             <img
+//               src={URL.createObjectURL(photo)}
+//               alt={`Preview ${photo.name}`}
+//               className="photo-thumb"
+//               style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 6 }}
+//             />
+//             <span>{photo.name}</span>
             <input
               type="text"
+              value={captions[idx] || ""}
+              onChange={e => {
+                const newCaptions = [...captions];
+                newCaptions[idx] = e.target.value;
+                setCaptions(newCaptions);
+              }}
               placeholder="Caption"
               value={captions[idx] || ""}
               onChange={(e) => handleCaptionChange(idx, e.target.value)}
