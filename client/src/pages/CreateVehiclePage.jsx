@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext'; // <-- Add this
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
-  make: '',
-  model: '',
-  year: '',
-  price: '',
-  vin: '',
-  mileage: '',
-  color: '',
-  transmission: '',
-  bodystyle: '',
-  enginecylinders: '',
-  condition: '',
-  description: '',
-  listingaddress: '',
+  make: "",
+  model: "",
+  year: "",
+  price: "",
+  vin: "",
+  mileage: "",
+  color: "",
+  transmission: "",
+  bodystyle: "",
+  enginecylinders: "",
+  condition: "",
+  description: "",
+  listingaddress: "",
 };
 
 export default function CreateVehiclePage() {
@@ -24,12 +25,13 @@ export default function CreateVehiclePage() {
   const [photoPreviews, setPhotoPreviews] = useState([]);
   const [message, setMessage] = useState('');
   const { user } = useAuth(); // <-- Add this
+  const navigate = useNavigate();
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handlePhotoChange = e => {
+  const handlePhotoChange = (e) => {
     const files = Array.from(e.target.files);
     setPhotos(files);
     setCaptions(Array(files.length).fill(''));
@@ -42,9 +44,9 @@ export default function CreateVehiclePage() {
     setCaptions(newCaptions);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
+    setMessage("");
     // 1. Create vehicle
     const res = await fetch('/api/vehicles', {
       method: 'POST',
@@ -55,7 +57,7 @@ export default function CreateVehiclePage() {
       body: JSON.stringify(form),
     });
     if (!res.ok) {
-      setMessage('Failed to create vehicle.');
+      setMessage("Failed to create vehicle.");
       return;
     }
     const vehicle = await res.json();
@@ -68,14 +70,16 @@ export default function CreateVehiclePage() {
         formData.append('captions[]', captions[idx] || ''); // <-- Use array notation
       });
       await fetch(`/api/vehicles/${vehicle.id}/photos`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
     }
-    setMessage('Vehicle created successfully!');
+    setMessage("Vehicle created successfully!");
     setForm(initialState);
     setPhotos([]);
     setCaptions([]);
+    // redirect to MyVehiclesPage
+    navigate("/my-vehicles");
   };
 
   return (
@@ -118,7 +122,12 @@ export default function CreateVehiclePage() {
           </div>
           <div>
             <label>Listing Address:</label>
-            <input name="listingaddress" value={form.listingaddress} onChange={handleChange} required />
+            <input
+              name="listingaddress"
+              value={form.listingaddress}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div>
@@ -139,7 +148,12 @@ export default function CreateVehiclePage() {
 
           <div>
             <label>Engine Cylinders:</label>
-            <select name="enginecylinders" value={form.enginecylinders} onChange={handleChange} required>
+            <select
+              name="enginecylinders"
+              value={form.enginecylinders}
+              onChange={handleChange}
+              required
+            >
               <option value="">Select</option>
               <option value="2">2</option>
               <option value="4">4</option>
@@ -182,6 +196,14 @@ export default function CreateVehiclePage() {
                 style={{ width: 80, height: 60, objectFit: "cover", marginRight: 8, borderRadius: 4, border: "1px solid #ccc" }}
               />
             )}
+//           <div key={idx} className="photo-caption-row">
+//             <img
+//               src={URL.createObjectURL(photo)}
+//               alt={`Preview ${photo.name}`}
+//               className="photo-thumb"
+//               style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 6 }}
+//             />
+//             <span>{photo.name}</span>
             <input
               type="text"
               value={captions[idx] || ""}
@@ -191,6 +213,9 @@ export default function CreateVehiclePage() {
                 setCaptions(newCaptions);
               }}
               placeholder="Caption"
+              value={captions[idx] || ""}
+              onChange={(e) => handleCaptionChange(idx, e.target.value)}
+              style={{ width: 120, marginLeft: 8 }}
             />
           </div>
         ))}
