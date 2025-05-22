@@ -1,22 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext'; // <-- Add this
+import { useAuth } from '../contexts/AuthContext';
 
-const EditVehiclePage = () => {
+const initialState = {
+  make: '',
+  model: '',
+  year: '',
+  price: '',
+  vin: '',
+  mileage: '',
+  color: '',
+  transmission: '',
+  bodystyle: '',
+  enginecylinders: '',
+  condition: '',
+  description: '',
+  listingaddress: '',
+};
+
+export default function EditVehiclePage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [form, setForm] = useState(null);
+  const [form, setForm] = useState(initialState);
   const [loading, setLoading] = useState(true);
   const [photos, setPhotos] = useState([]);
   const [newPhotos, setNewPhotos] = useState([]);
   const [newCaptions, setNewCaptions] = useState([]);
   const [editingCaptions, setEditingCaptions] = useState({});
-  const { user } = useAuth(); // <-- Add this
+  const { user } = useAuth();
 
   useEffect(() => {
     fetch(`/api/vehicles/${id}`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
       .then(res => res.json())
@@ -36,7 +52,7 @@ const EditVehiclePage = () => {
     await fetch(`/api/vehicles/vehiclephotos/${photoId}`, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
     setPhotos(photos.filter(p => p.id !== photoId));
@@ -48,7 +64,7 @@ const EditVehiclePage = () => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(form)
     });
@@ -75,13 +91,13 @@ const EditVehiclePage = () => {
       formData.append('photos', photo);
     });
     newCaptions.forEach(caption => {
-      formData.append('captions', caption);
+      formData.append('captions[]', caption);
     });
     const res = await fetch(`/api/vehicles/${id}/photos`, {
       method: 'POST',
       body: formData,
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
     if (res.ok) {
@@ -103,7 +119,7 @@ const EditVehiclePage = () => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify({ caption: newCaption }),
     });
@@ -119,104 +135,130 @@ const EditVehiclePage = () => {
   if (!form) return <div>Vehicle not found.</div>;
 
   return (
-    <div className="vehicle-form-container">
+    <div className="create-vehicle-form">
       <h2>Edit Vehicle</h2>
 
-      {/* Photos at the top */}
+      {/* Photo Thumbnails */}
       <div className="photo-thumbnails">
-        {photos.map(photo => (
-          <div key={photo.id} className="photo-thumb">
-            <img src={`http://localhost:3001/${photo.photourl}`} alt={photo.caption} width={120} />
+        {photos.map((photo, idx) => (
+          <div className="photo-thumb" key={photo.id || idx}>
+            {photo.photourl && (
+              <img
+                src={`http://localhost:3001/${photo.photourl}`}
+                alt={`vehicle-${idx}`}
+                style={{ width: 160, height: 120, objectFit: "cover", borderRadius: 4, border: "1px solid #ccc" }}
+              />
+            )}
+            {photo.isprimary && (
+              <span className="primary-badge">Primary</span>
+            )}
             <input
+              className="caption-input"
               type="text"
-              value={editingCaptions[photo.id] !== undefined ? editingCaptions[photo.id] : photo.caption}
+              value={
+                editingCaptions[photo.id] !== undefined
+                  ? editingCaptions[photo.id]
+                  : photo.caption || ""
+              }
               onChange={e => handleCaptionChange(photo.id, e.target.value)}
-              style={{ marginTop: '0.5rem', width: '100%' }}
+              style={{ marginTop: 4, marginBottom: 4 }}
             />
-            <button
-              type="button"
-              className="submit-btn"
-              style={{ marginTop: '0.25rem', marginBottom: '0.25rem' }}
-              onClick={() => handleUpdateCaption(photo.id)}
-            >
-              Update Caption
-            </button>
-            <button
-              type="button"
-              className="delete-photo-btn"
-              onClick={() => handlePhotoDelete(photo.id)}
-            >
-              Delete
-            </button>
-            {photo.isprimary && <span className="primary-badge">Primary</span>}
+            <div style={{ display: "flex", gap: "0.5rem", marginBottom: 4 }}>
+              <button
+                type="button"
+                className="edit-btn"
+                style={{ padding: "0.25rem 0.75rem", fontSize: "0.85rem" }}
+                onClick={() => handleUpdateCaption(photo.id)}
+              >
+                Update Caption
+              </button>
+              <button
+                type="button"
+                className="delete-photo-btn"
+                style={{ padding: "0.25rem 0.75rem", fontSize: "0.85rem" }}
+                onClick={() => handlePhotoDelete(photo.id)}
+              >
+                Delete Photo
+              </button>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Add Photos input and button go here */}
-      <form onSubmit={handleUploadPhotos} style={{ marginBottom: '2rem' }}>
-        <label>Add Photos:</label>
-        <input type="file" multiple accept="image/*" onChange={handleNewPhotoChange} />
-        {newPhotos.map((photo, idx) => (
-          <div key={idx} className="photo-caption-row">
-            <img
-              src={URL.createObjectURL(photo)}
-              alt={`Preview ${photo.name}`}
-              className="photo-thumb"
-              width={80}
-            />
-            <span>{photo.name}</span>
-            <input
-              type="text"
-              className="caption-input"
-              placeholder="Caption"
-              value={newCaptions[idx] || ''}
-              onChange={e => handleNewCaptionChange(idx, e.target.value)}
-            />
-          </div>
-        ))}
+      <div style={{ marginBottom: "2rem" }}>
+        <label>Add More Photos:</label>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleNewPhotoChange}
+          style={{ display: "block", marginBottom: "0.5rem" }}
+        />
         {newPhotos.length > 0 && (
-          <button type="submit" className="submit-btn" style={{ marginTop: '0.5rem' }}>
-            Upload Photos
-          </button>
-        )}
-      </form>
-
-      {/* Main vehicle edit form fields below */}
-      <form className="vehicle-form" onSubmit={handleSubmit}>
-        {/* 2 fields per row */}
-        <div className="form-row-2">
           <div>
-            <label>Make</label>
+            {newPhotos.map((photo, idx) => (
+              <div className="photo-caption-row" key={idx}>
+                <img
+                  src={URL.createObjectURL(photo)}
+                  alt={`new-upload-${idx}`}
+                  style={{ width: 80, height: 60, objectFit: "cover", borderRadius: 4, border: "1px solid #ccc" }}
+                />
+                <input
+                  className="caption-input"
+                  type="text"
+                  value={newCaptions[idx] || ""}
+                  onChange={e => handleNewCaptionChange(idx, e.target.value)}
+                  placeholder="Caption"
+                  style={{ marginLeft: 8 }}
+                />
+              </div>
+            ))}
+            <button
+              type="button"
+              className="edit-btn"
+              onClick={handleUploadPhotos}
+              style={{ marginTop: 8 }}
+            >
+              Upload Photos
+            </button>
+          </div>
+        )}
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <div className="form-grid">
+          <div>
+            <label>Make:</label>
             <input name="make" value={form.make} onChange={handleChange} required />
           </div>
           <div>
-            <label>Model</label>
+            <label>Model:</label>
             <input name="model" value={form.model} onChange={handleChange} required />
           </div>
-        </div>
-        <div className="form-row-2">
           <div>
-            <label>Year</label>
-            <input name="year" type="number" value={form.year} onChange={handleChange} required />
+            <label>Year:</label>
+            <input name="year" value={form.year} onChange={handleChange} required />
           </div>
           <div>
-            <label>Price</label>
-            <input name="price" type="number" value={form.price} onChange={handleChange} required />
-          </div>
-        </div>
-        <div className="form-row-2">
-          <div>
-            <label>Mileage</label>
-            <input name="mileage" type="number" value={form.mileage} onChange={handleChange} required />
+            <label>Price:</label>
+            <input name="price" value={form.price} onChange={handleChange} required />
           </div>
           <div>
-            <label>Color</label>
+            <label>VIN:</label>
+            <input name="vin" value={form.vin} onChange={handleChange} placeholder="Optional" />
+          </div>
+          <div>
+            <label>Mileage:</label>
+            <input name="mileage" value={form.mileage} onChange={handleChange} required />
+          </div>
+          <div>
+            <label>Color:</label>
             <input name="color" value={form.color} onChange={handleChange} required />
           </div>
-        </div>
-        {/* 2 dropdowns per row */}
-        <div className="form-row-2">
+          <div>
+            <label>Listing Address:</label>
+            <input name="listingaddress" value={form.listingaddress} onChange={handleChange} required />
+          </div>
           <div>
             <label>Body Style:</label>
             <select name="bodystyle" value={form.bodystyle} onChange={handleChange} required>
@@ -244,8 +286,6 @@ const EditVehiclePage = () => {
               <option value="12">12</option>
             </select>
           </div>
-        </div>
-        <div className="form-row-2">
           <div>
             <label>Condition:</label>
             <select name="condition" value={form.condition} onChange={handleChange} required>
@@ -265,21 +305,18 @@ const EditVehiclePage = () => {
             </select>
           </div>
         </div>
-        {/* Description and Address full width */}
-        <div className="form-row-2">
-          <div>
-            <label>Description</label>
-            <textarea name="description" value={form.description} onChange={handleChange} />
-          </div>
-          <div>
-            <label>Listing Address</label>
-            <input name="listingaddress" value={form.listingaddress} onChange={handleChange} />
-          </div>
+        <div>
+          <label>Description:</label>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            rows={6}
+            className="description-textarea"
+          />
         </div>
-        <button type="submit" className="submit-btn">Save Changes</button>
+        <button type="submit">Update Vehicle</button>
       </form>
     </div>
   );
-};
-
-export default EditVehiclePage;
+}

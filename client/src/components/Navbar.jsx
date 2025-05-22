@@ -1,7 +1,5 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-// Example: Replace with your actual auth context/hook
 import { useAuth } from "../contexts/AuthContext";
 
 const Navbar = () => {
@@ -10,7 +8,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate("/login");
   };
 
   return (
@@ -25,26 +23,26 @@ const Navbar = () => {
         <Link to="/" className="hover:underline">
           Home
         </Link>
-        {user ? (
-          <>
-            <Link to="/vehicles/new" className="hover:underline">
-              Create Listing
-            </Link>
-            <Link to="/my-vehicles" className="hover:underline">
-              My Listings
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="hover:underline bg-transparent border-none cursor-pointer"
-              style={{ padding: 0, background: "none" }}
-            >
-              Logout
-            </button>
-          </>
-        ) : (
+        <Link to={user && user.id ? "/vehicles/new" : "/login"} className="hover:underline">
+          Create Listing
+        </Link>
+        {user && user.id && (
+          <Link to="/my-vehicles" className="hover:underline">
+            My Vehicles
+          </Link>
+        )}
+        {!user || !user.id ? (
           <Link to="/login" className="hover:underline">
             Login
           </Link>
+        ) : (
+          <button
+            onClick={handleLogout}
+            className="hover:underline bg-transparent border-none text-white cursor-pointer"
+            style={{ padding: 0, background: "none" }}
+          >
+            Logout
+          </button>
         )}
       </nav>
     </header>

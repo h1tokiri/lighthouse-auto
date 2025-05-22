@@ -101,7 +101,12 @@ export default function CreateVehiclePage() {
           </div>
           <div>
             <label>VIN:</label>
-            <input name="vin" value={form.vin} onChange={handleChange} />
+            <input
+              name="vin"
+              value={form.vin}
+              onChange={handleChange}
+              placeholder="Optional" // <-- Add this line
+            />
           </div>
           <div>
             <label>Mileage:</label>

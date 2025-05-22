@@ -91,11 +91,18 @@ router.post("/:id/photos", upload.array("photos"), async (req, res) => {
     const files = req.files;
     const captions = req.body.captions || [];
 
+    // Check if a primary photo already exists
+    const { rows } = await db.query(
+      'SELECT id FROM VehiclePhotos WHERE VehicleID = $1 AND IsPrimary = TRUE',
+      [id]
+    );
+    let isPrimary = rows.length === 0; // true if no primary exists
+
     const photoPromises = files.map((file, idx) => {
       return db.query(
         `INSERT INTO vehiclephotos (vehicleid, photourl, caption, isprimary)
          VALUES ($1, $2, $3, $4) RETURNING *`,
-        [id, file.path, captions[idx] || "", idx === 0]
+        [id, file.path, captions[idx] || "", isPrimary && idx === 0]
       );
     });
 
@@ -179,6 +186,26 @@ router.put("/vehiclephotos/:id", async (req, res) => {
     res.sendStatus(204);
   } catch (err) {
     console.error("Error updating caption:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Set a photo as primary for a vehicle
+router.put('/api/vehicles/:vehicleId/photos/:photoId/primary', async (req, res) => {
+  const { vehicleId, photoId } = req.params;
+  try {
+    // Set all photos for this vehicle to not primary
+    await db.query(
+      'UPDATE VehiclePhotos SET IsPrimary = FALSE WHERE VehicleID = $1',
+      [vehicleId]
+    );
+    // Set the selected photo to primary
+    await db.query(
+      'UPDATE VehiclePhotos SET IsPrimary = TRUE WHERE ID = $1 AND VehicleID = $2',
+      [photoId, vehicleId]
+    );
+    res.sendStatus(200);
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
