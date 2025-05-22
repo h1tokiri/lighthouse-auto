@@ -55,7 +55,7 @@ const DetailedListingsPage = () => {
           &#8594;
         </button>
       </div>
-      <div className="photo-caption">{currentPhoto.caption}</div>
+      <div className="photo-caption mb-6">{currentPhoto.caption}</div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         {/* Vehicle details */}

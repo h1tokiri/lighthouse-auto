@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext'; // <-- Add this
 
 const EditVehiclePage = () => {
   const { id } = useParams();
@@ -10,9 +11,14 @@ const EditVehiclePage = () => {
   const [newPhotos, setNewPhotos] = useState([]);
   const [newCaptions, setNewCaptions] = useState([]);
   const [editingCaptions, setEditingCaptions] = useState({});
+  const { user } = useAuth(); // <-- Add this
 
   useEffect(() => {
-    fetch(`/api/vehicles/${id}`)
+    fetch(`/api/vehicles/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
+      },
+    })
       .then(res => res.json())
       .then(data => {
         setForm(data);
@@ -27,7 +33,12 @@ const EditVehiclePage = () => {
 
   const handlePhotoDelete = async (photoId) => {
     if (!window.confirm('Delete this photo?')) return;
-    await fetch(`/api/vehicles/vehiclephotos/${photoId}`, { method: 'DELETE' });
+    await fetch(`/api/vehicles/vehiclephotos/${photoId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
+      },
+    });
     setPhotos(photos.filter(p => p.id !== photoId));
   };
 
@@ -35,7 +46,10 @@ const EditVehiclePage = () => {
     e.preventDefault();
     await fetch(`/api/vehicles/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
+      },
       body: JSON.stringify(form)
     });
     navigate('/my-vehicles');
@@ -66,6 +80,9 @@ const EditVehiclePage = () => {
     const res = await fetch(`/api/vehicles/${id}/photos`, {
       method: 'POST',
       body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
+      },
     });
     if (res.ok) {
       const uploaded = await res.json();
@@ -82,11 +99,14 @@ const EditVehiclePage = () => {
   const handleUpdateCaption = async (photoId) => {
     const newCaption = editingCaptions[photoId];
     if (typeof newCaption !== 'string') return;
-const res = await fetch(`/api/vehicles/vehiclephotos/${photoId}`, {
-  method: 'PUT',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ caption: newCaption }),
-});
+    const res = await fetch(`/api/vehicles/vehiclephotos/${photoId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
+      },
+      body: JSON.stringify({ caption: newCaption }),
+    });
     if (res.ok) {
       setPhotos(photos.map(p =>
         p.id === photoId ? { ...p, caption: newCaption } : p

@@ -1,19 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const MyVehiclesPage = () => {
   const [vehicles, setVehicles] = useState([]);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
-    fetch('/api/vehicles/my-vehicles')
+    if (!user) return;
+    fetch('/api/vehicles/my-vehicles', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
       .then(res => res.json())
-      .then(data => setVehicles(data));
-  }, []);
+      .then(data => {
+        console.log("Fetched vehicles:", data);
+        setVehicles(data);
+      })
+      .catch(() => setVehicles([]));
+  }, [user]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this vehicle?')) return;
-    await fetch(`/api/vehicles/${id}`, { method: 'DELETE' });
+    await fetch(`/api/vehicles/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
     setVehicles(vehicles.filter(v => v.id !== id));
   };
 

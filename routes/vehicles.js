@@ -3,27 +3,22 @@ const router = express.Router();
 const db = require("../db/connection"); // Adjust path if needed
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" }); // You can configure this as needed
+const requireUser = require('../middleware/verifyToken'); // or your JWT middleware
 
 // Middleware to parse JSON bodies
 router.use(express.json());
 
-// Middleware to get user ID (replace with your auth logic)
-function requireUser(req, res, next) {
-  if (!req.user) return res.status(401).json({ error: "Unauthorized" });
-  next();
-}
-
 // --- Place /my-vehicles route FIRST ---
-router.get("/my-vehicles", async (req, res) => {
-  console.log("--- /my-vehicles route hit ---");
+router.get("/my-vehicles", requireUser, async (req, res) => {
   try {
+    const userId = req.user.id;
     const vehicles = await db.query(`
       SELECT v.id, v.make, v.model, v.year, v.price,
         (SELECT photourl FROM vehiclephotos WHERE vehicleid = v.id AND isprimary = TRUE LIMIT 1) AS "primaryPhoto"
       FROM vehicles v
-      WHERE v.userid = 1
+      WHERE v.userid = $1
       ORDER BY v.createdon DESC
-    `);
+    `, [userId]);
     res.json(vehicles.rows);
   } catch (err) {
     console.error("Error in /my-vehicles:", err);
@@ -67,51 +62,24 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST /api/vehicles - create a new vehicle
-router.post("/", async (req, res) => {
+router.post("/", requireUser, async (req, res) => {
   try {
-    console.log("Received body:", req.body);
-    const userid = 1; // Hardcoded for now
+    const userId = req.user.id;
     const {
-      make,
-      model,
-      year,
-      price,
-      vin,
-      mileage,
-      color,
-      transmission,
-      bodystyle,
-      enginecylinders,
-      condition,
-      description,
-      listingaddress,
+      make, model, year, price, vin, mileage, color,
+      transmission, bodystyle, enginecylinders, condition,
+      description, listingaddress
     } = req.body;
 
     const result = await db.query(
       `INSERT INTO vehicles
-        (userid, make, model, year, price, vin, mileage, color, transmission, bodystyle, enginecylinders, condition, description, listingaddress)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
-       RETURNING *`,
-      [
-        userid,
-        make,
-        model,
-        year,
-        price,
-        vin,
-        mileage,
-        color,
-        transmission,
-        bodystyle,
-        enginecylinders,
-        condition,
-        description,
-        listingaddress,
-      ]
+      (userid, make, model, year, price, vin, mileage, color, transmission, bodystyle, enginecylinders, condition, description, listingaddress)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+      RETURNING *`,
+      [userId, make, model, year, price, vin, mileage, color, transmission, bodystyle, enginecylinders, condition, description, listingaddress]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error("Error in /api/vehicles:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -163,46 +131,40 @@ router.delete("/vehiclephotos/:id", async (req, res) => {
 });
 
 // Update vehicle for user 1
-router.put("/:id", async (req, res) => {
+router.put("/:id", requireUser, async (req, res) => {
   try {
-    const { id } = req.params;
+    const userId = req.user.id;
+    const vehicleId = req.params.id;
     const {
-      make,
-      model,
-      year,
-      price,
-      mileage,
-      color,
-      transmission,
-      bodystyle,
-      enginecylinders,
-      condition,
-      description,
-      listingaddress,
+      make, model, year, price, vin, mileage, color,
+      transmission, bodystyle, enginecylinders, condition,
+      description, listingaddress
     } = req.body;
+
+    // Only allow update if the vehicle belongs to the user
+    const { rows } = await db.query(
+      "SELECT * FROM vehicles WHERE id = $1 AND userid = $2",
+      [vehicleId, userId]
+    );
+    if (rows.length === 0) {
+      return res.status(403).json({ error: "Not authorized" });
+    }
+
+    // Update all fields
     await db.query(
       `UPDATE vehicles SET
-        make = $1, model = $2, year = $3, price = $4, mileage = $5, color = $6,
-        transmission = $7, bodystyle = $8, enginecylinders = $9,
-        condition = $10, description = $11, listingaddress = $12
-      WHERE id = $13 AND userid = 1`,
+        make = $1, model = $2, year = $3, price = $4, vin = $5, mileage = $6, color = $7,
+        transmission = $8, bodystyle = $9, enginecylinders = $10, condition = $11,
+        description = $12, listingaddress = $13
+      WHERE id = $14 AND userid = $15`,
       [
-        make,
-        model,
-        year,
-        price,
-        mileage,
-        color,
-        transmission,
-        bodystyle,
-        enginecylinders,
-        condition,
-        description,
-        listingaddress,
-        id,
+        make, model, year, price, vin, mileage, color,
+        transmission, bodystyle, enginecylinders, condition,
+        description, listingaddress, vehicleId, userId
       ]
     );
-    res.sendStatus(204);
+
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
