@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext'; // <-- Add this
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext"; // Add this import
 
 const initialState = {
   make: "",
@@ -22,10 +22,9 @@ export default function CreateVehiclePage() {
   const [form, setForm] = useState(initialState);
   const [photos, setPhotos] = useState([]);
   const [captions, setCaptions] = useState([]);
-  const [photoPreviews, setPhotoPreviews] = useState([]);
-  const [message, setMessage] = useState('');
-  const { user } = useAuth(); // <-- Add this
-  const navigate = useNavigate();
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate(); // Add navigation
+  const { currentUser } = useAuth(); // Import auth context
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -34,8 +33,7 @@ export default function CreateVehiclePage() {
   const handlePhotoChange = (e) => {
     const files = Array.from(e.target.files);
     setPhotos(files);
-    setCaptions(Array(files.length).fill(''));
-    setPhotoPreviews(files.map(file => URL.createObjectURL(file))); // <-- Add this
+    setCaptions(Array(files.length).fill(""));
   };
 
   const handleCaptionChange = (idx, value) => {
@@ -47,39 +45,67 @@ export default function CreateVehiclePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-    // 1. Create vehicle
-    const res = await fetch('/api/vehicles', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`, // <-- Add this
-      },
-      body: JSON.stringify(form),
-    });
-    if (!res.ok) {
-      setMessage("Failed to create vehicle.");
-      return;
-    }
-    const vehicle = await res.json();
 
-    // 2. Upload photos with captions
-    if (photos.length > 0) {
-      const formData = new FormData();
-      photos.forEach((photo, idx) => {
-        formData.append('photos', photo);
-        formData.append('captions[]', captions[idx] || ''); // <-- Use array notation
-      });
-      await fetch(`/api/vehicles/${vehicle.id}/photos`, {
+    try {
+      // Get token from localStorage
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setMessage("You must be logged in to create a vehicle");
+        return;
+      }
+
+      // 1. Create vehicle with auth token
+      const res = await fetch("/api/vehicles", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Add token here
+        },
+        body: JSON.stringify(form),
       });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        setMessage(errorData.error || "Failed to create vehicle.");
+        return;
+      }
+
+      const vehicle = await res.json();
+
+      // 2. Upload photos with captions (also with auth token)
+      if (photos.length > 0) {
+        const formData = new FormData();
+        photos.forEach((photo, idx) => {
+          formData.append("photos", photo);
+          formData.append("captions", captions[idx] || "");
+        });
+
+        const photoRes = await fetch(`/api/vehicles/${vehicle.id}/photos`, {
+          method: "POST",
+          headers: {
+            // FormData can't include Content-Type, but needs Authorization
+            Authorization: `Bearer ${token}`, // Add token here too
+          },
+          body: formData,
+        });
+
+        if (!photoRes.ok) {
+          setMessage("Vehicle created but photos failed to upload.");
+          navigate("/my-vehicles"); // Redirect even if photos fail
+          return;
+        }
+      }
+
+      setMessage("Vehicle created successfully!");
+      setForm(initialState);
+      setPhotos([]);
+      setCaptions([]);
+      navigate("/my-vehicles"); // Redirect to vehicle list
+    } catch (error) {
+      console.error("Error creating vehicle:", error);
+      setMessage(`Error: ${error.message}`);
     }
-    setMessage("Vehicle created successfully!");
-    setForm(initialState);
-    setPhotos([]);
-    setCaptions([]);
-    // redirect to MyVehiclesPage
-    navigate("/my-vehicles");
   };
 
   return (
@@ -104,13 +130,16 @@ export default function CreateVehiclePage() {
             <input name="price" value={form.price} onChange={handleChange} required />
           </div>
           <div>
-            <label>VIN:</label>
+            <label>VIN (must be unique):</label>
             <input
               name="vin"
               value={form.vin}
               onChange={handleChange}
-              placeholder="Optional" // <-- Add this line
+              placeholder="Leave blank if unknown"
             />
+            <small style={{ display: "block", color: "#666", fontSize: "12px", marginTop: "2px" }}>
+              If you don't know the VIN or want to add it later, you can leave this blank
+            </small>
           </div>
           <div>
             <label>Mileage:</label>
@@ -188,30 +217,16 @@ export default function CreateVehiclePage() {
           <input type="file" multiple accept="image/*" onChange={handlePhotoChange} />
         </div>
         {photos.map((photo, idx) => (
-          <div key={idx} style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
-            {photoPreviews[idx] && (
-              <img
-                src={photoPreviews[idx]}
-                alt={`preview-${idx}`}
-                style={{ width: 80, height: 60, objectFit: "cover", marginRight: 8, borderRadius: 4, border: "1px solid #ccc" }}
-              />
-            )}
-//           <div key={idx} className="photo-caption-row">
-//             <img
-//               src={URL.createObjectURL(photo)}
-//               alt={`Preview ${photo.name}`}
-//               className="photo-thumb"
-//               style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 6 }}
-//             />
-//             <span>{photo.name}</span>
+          <div key={idx} className="photo-caption-row">
+            <img
+              src={URL.createObjectURL(photo)}
+              alt={`Preview ${photo.name}`}
+              className="photo-thumb"
+              style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 6 }}
+            />
+            <span>{photo.name}</span>
             <input
               type="text"
-              value={captions[idx] || ""}
-              onChange={e => {
-                const newCaptions = [...captions];
-                newCaptions[idx] = e.target.value;
-                setCaptions(newCaptions);
-              }}
               placeholder="Caption"
               value={captions[idx] || ""}
               onChange={(e) => handleCaptionChange(idx, e.target.value)}
