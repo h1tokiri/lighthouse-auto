@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 const AuthContext = createContext();
 
@@ -83,12 +83,21 @@ export function AuthProvider({ children }) {
     setCurrentUser(null);
   };
 
+  // Function to get auth headers for authorized API calls
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+    return token
+      ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+      : { "Content-Type": "application/json" };
+  };
+
   const value = {
     currentUser,
+    loading,
     register,
     login,
     logout,
-    loading,
+    getAuthHeaders,
   };
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;

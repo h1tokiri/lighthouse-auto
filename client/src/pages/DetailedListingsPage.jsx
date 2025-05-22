@@ -42,7 +42,7 @@ const DetailedListingsPage = () => {
       </h1>
 
       {/* Photo carousel */}
-      <div className="photo-carousel mb-6">
+      <div className="photo-carousel mb-2">
         <button className="carousel-arrow left" onClick={handlePrev} aria-label="Previous photo">
           &#8592;
         </button>
@@ -54,8 +54,8 @@ const DetailedListingsPage = () => {
         <button className="carousel-arrow right" onClick={handleNext} aria-label="Next photo">
           &#8594;
         </button>
-        <div className="photo-caption">{currentPhoto.caption}</div>
       </div>
+      <div className="photo-caption">{currentPhoto.caption}</div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         {/* Vehicle details */}
