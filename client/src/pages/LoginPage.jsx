@@ -32,7 +32,15 @@ export default function LoginPage() {
 
       // Store token in localStorage
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          id: data.user.id,
+          firstname: data.user.firstname,
+          lastname: data.user.lastname,
+          email: data.user.email,
+        })
+      );
 
       navigate("/"); // Redirect to homepage on success
     } catch (err) {
