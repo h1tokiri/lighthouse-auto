@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext"; // Add this import
 
 const initialState = {
   make: "",
@@ -21,6 +23,8 @@ export default function CreateVehiclePage() {
   const [photos, setPhotos] = useState([]);
   const [captions, setCaptions] = useState([]);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate(); // Add navigation
+  const { currentUser } = useAuth(); // Import auth context
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -41,34 +45,67 @@ export default function CreateVehiclePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-    // 1. Create vehicle
-    const res = await fetch("/api/vehicles", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    if (!res.ok) {
-      setMessage("Failed to create vehicle.");
-      return;
-    }
-    const vehicle = await res.json();
 
-    // 2. Upload photos with captions
-    if (photos.length > 0) {
-      const formData = new FormData();
-      photos.forEach((photo, idx) => {
-        formData.append("photos", photo);
-        formData.append("captions", captions[idx] || "");
-      });
-      await fetch(`/api/vehicles/${vehicle.id}/photos`, {
+    try {
+      // Get token from localStorage
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setMessage("You must be logged in to create a vehicle");
+        return;
+      }
+
+      // 1. Create vehicle with auth token
+      const res = await fetch("/api/vehicles", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Add token here
+        },
+        body: JSON.stringify(form),
       });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        setMessage(errorData.error || "Failed to create vehicle.");
+        return;
+      }
+
+      const vehicle = await res.json();
+
+      // 2. Upload photos with captions (also with auth token)
+      if (photos.length > 0) {
+        const formData = new FormData();
+        photos.forEach((photo, idx) => {
+          formData.append("photos", photo);
+          formData.append("captions", captions[idx] || "");
+        });
+
+        const photoRes = await fetch(`/api/vehicles/${vehicle.id}/photos`, {
+          method: "POST",
+          headers: {
+            // FormData can't include Content-Type, but needs Authorization
+            Authorization: `Bearer ${token}`, // Add token here too
+          },
+          body: formData,
+        });
+
+        if (!photoRes.ok) {
+          setMessage("Vehicle created but photos failed to upload.");
+          navigate("/my-vehicles"); // Redirect even if photos fail
+          return;
+        }
+      }
+
+      setMessage("Vehicle created successfully!");
+      setForm(initialState);
+      setPhotos([]);
+      setCaptions([]);
+      navigate("/my-vehicles"); // Redirect to vehicle list
+    } catch (error) {
+      console.error("Error creating vehicle:", error);
+      setMessage(`Error: ${error.message}`);
     }
-    setMessage("Vehicle created successfully!");
-    setForm(initialState);
-    setPhotos([]);
-    setCaptions([]);
   };
 
   return (
@@ -93,8 +130,16 @@ export default function CreateVehiclePage() {
             <input name="price" value={form.price} onChange={handleChange} required />
           </div>
           <div>
-            <label>VIN:</label>
-            <input name="vin" value={form.vin} onChange={handleChange} />
+            <label>VIN (must be unique):</label>
+            <input
+              name="vin"
+              value={form.vin}
+              onChange={handleChange}
+              placeholder="Leave blank if unknown"
+            />
+            <small style={{ display: "block", color: "#666", fontSize: "12px", marginTop: "2px" }}>
+              If you don't know the VIN or want to add it later, you can leave this blank
+            </small>
           </div>
           <div>
             <label>Mileage:</label>
@@ -205,5 +250,3 @@ export default function CreateVehiclePage() {
     </div>
   );
 }
-
-// test

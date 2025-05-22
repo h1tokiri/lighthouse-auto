@@ -17,7 +17,7 @@ router.post("/register", async (req, res) => {
     const userId = await addUser({ firstname, lastname, email, password });
 
     // Generate JWT token
-    const token = jwt.sign({ userId, email }, process.env.JWT_SECRET || "your-secret-key", {
+    const token = jwt.sign({ id: userId, email }, process.env.JWT_SECRET || "your-secret-key", {
       expiresIn: process.env.JWT_EXPIRY || "24h",
     });
 
@@ -43,13 +43,18 @@ router.post("/login", async (req, res) => {
     const user = await getUserByEmail(email);
 
     // Check if user exists and password is correct
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ error: "Invalid email or password" });
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ error: "Invalid credentials" });
     }
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
+      { id: user.id, email: user.email },
       process.env.JWT_SECRET || "your-secret-key",
       { expiresIn: process.env.JWT_EXPIRY || "24h" }
     );
