@@ -24,7 +24,7 @@ export default function CreateVehiclePage() {
   const [captions, setCaptions] = useState([]);
   const [message, setMessage] = useState("");
   const navigate = useNavigate(); // Add navigation
-  const { currentUser } = useAuth(); // Import auth context
+  const { currentUser, getAuthHeaders } = useAuth(); // Import auth context
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -42,28 +42,91 @@ export default function CreateVehiclePage() {
     setCaptions(newCaptions);
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setMessage("");
+
+  //   try {
+  //     // Get token from localStorage
+  //     const token = localStorage.getItem("token");
+
+  //     if (!token) {
+  //       setMessage("You must be logged in to create a vehicle");
+  //       return;
+  //     }
+
+  //     // 1. Create vehicle with auth token
+  //     const res = await fetch("/api/vehicles", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`, // Add token here
+  //       },
+  //       body: JSON.stringify(form),
+  //     });
+
+  //     if (!res.ok) {
+  //       const errorData = await res.json();
+  //       setMessage(errorData.error || "Failed to create vehicle.");
+  //       return;
+  //     }
+
+  //     const vehicle = await res.json();
+
+  //     // 2. Upload photos with captions (also with auth token)
+  //     if (photos.length > 0) {
+  //       const formData = new FormData();
+  //       photos.forEach((photo, idx) => {
+  //         formData.append("photos", photo);
+  //         formData.append("captions", captions[idx] || "");
+  //       });
+
+  //       const photoRes = await fetch(`/api/vehicles/${vehicle.id}/photos`, {
+  //         method: "POST",
+  //         headers: {
+  //           // FormData can't include Content-Type, but needs Authorization
+  //           Authorization: `Bearer ${token}`, // Add token here too
+  //         },
+  //         body: formData,
+  //       });
+
+  //       if (!photoRes.ok) {
+  //         setMessage("Vehicle created but photos failed to upload.");
+  //         navigate("/my-vehicles"); // Redirect even if photos fail
+  //         return;
+  //       }
+  //     }
+
+  //     setMessage("Vehicle created successfully!");
+  //     setForm(initialState);
+  //     setPhotos([]);
+  //     setCaptions([]);
+  //     navigate("/my-vehicles"); // Redirect to vehicle list
+  //   } catch (error) {
+  //     console.error("Error creating vehicle:", error);
+  //     setMessage(`Error: ${error.message}`);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
 
+    // const { getAuthHeaders } = useAuth();
+
+    console.log("Form data:", form);
+    console.log("Auth headers:", getAuthHeaders());
+    console.log("Current user:", currentUser);
+
     try {
-      // Get token from localStorage
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        setMessage("You must be logged in to create a vehicle");
-        return;
-      }
-
-      // 1. Create vehicle with auth token
+      // 1. Create vehicle
       const res = await fetch("/api/vehicles", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Add token here
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(form),
       });
+
+      console.log("Response status:", res.status);
 
       if (!res.ok) {
         const errorData = await res.json();
@@ -73,7 +136,7 @@ export default function CreateVehiclePage() {
 
       const vehicle = await res.json();
 
-      // 2. Upload photos with captions (also with auth token)
+      // 2. Upload photos
       if (photos.length > 0) {
         const formData = new FormData();
         photos.forEach((photo, idx) => {
@@ -84,15 +147,14 @@ export default function CreateVehiclePage() {
         const photoRes = await fetch(`/api/vehicles/${vehicle.id}/photos`, {
           method: "POST",
           headers: {
-            // FormData can't include Content-Type, but needs Authorization
-            Authorization: `Bearer ${token}`, // Add token here too
+            Authorization: getAuthHeaders().Authorization,
           },
           body: formData,
         });
 
         if (!photoRes.ok) {
           setMessage("Vehicle created but photos failed to upload.");
-          navigate("/my-vehicles"); // Redirect even if photos fail
+          navigate("/my-vehicles");
           return;
         }
       }
@@ -101,7 +163,7 @@ export default function CreateVehiclePage() {
       setForm(initialState);
       setPhotos([]);
       setCaptions([]);
-      navigate("/my-vehicles"); // Redirect to vehicle list
+      navigate("/my-vehicles");
     } catch (error) {
       console.error("Error creating vehicle:", error);
       setMessage(`Error: ${error.message}`);
