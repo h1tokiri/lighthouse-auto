@@ -25,7 +25,7 @@ const MyVehiclesPage = () => {
           vehicles.map(v => (
             <div className="vehicle-card" key={v.id}>
               <img
-                src={v.primaryPhoto ? `http://localhost:3001/${v.primaryPhoto}` : 'https://via.placeholder.com/200x120?text=No+Photo'}
+                src={v.photourl ? `http://localhost:3001/${v.photourl}` : 'https://via.placeholder.com/200x120?text=No+Photo'}
                 alt={`${v.make} ${v.model}`}
                 className="vehicle-card-photo"
               />
