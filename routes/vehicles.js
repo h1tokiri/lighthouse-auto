@@ -34,7 +34,19 @@ router.get("/", async (req, res) => {
 
 // 2) My vehicles for current user
 router.get("/my-vehicles", async (req, res) => {
+const router = express.Router();
+const db = require("../db/connection"); // Adjust path if needed
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" }); // You can configure this as needed
+const requireUser = require('../middleware/verifyToken'); // or your JWT middleware
+
+// Middleware to parse JSON bodies
+router.use(express.json());
+
+// --- Place /my-vehicles route FIRST ---
+router.get("/my-vehicles", requireUser, async (req, res) => {
   try {
+    const userId = req.user.id;
     const vehicles = await db.query(`
       SELECT
         v.id,
@@ -102,6 +114,15 @@ router.post("/", async (req, res) => {
       make, model, year, price, vin, mileage,
       color, transmission, bodystyle, enginecylinders,
       condition, description, listingaddress
+      } = req.body;
+// POST /api/vehicles - create a new vehicle
+router.post("/", requireUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const {
+      make, model, year, price, vin, mileage, color,
+      transmission, bodystyle, enginecylinders, condition,
+      description, listingaddress
     } = req.body;
 
     const result = await db.query(
@@ -141,6 +162,7 @@ router.post("/:id/photos", upload.array("photos"), async (req, res) => {
       )
     );
 
+
     const results = await Promise.all(photoPromises);
     res.status(201).json(results.map(r => r.rows[0]));
   } catch (err) {
@@ -149,6 +171,90 @@ router.post("/:id/photos", upload.array("photos"), async (req, res) => {
   }
 });
 
-// (You can leave your DELETE / PUT etc. here as is)
+
+// Delete a photo by ID
+router.delete("/vehiclephotos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await db.query("DELETE FROM vehiclephotos WHERE id = $1", [id]);
+    res.sendStatus(204);
+  } catch (err) {
+    console.error("Error deleting photo:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update vehicle for user 1
+router.put("/:id", requireUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const vehicleId = req.params.id;
+    const {
+      make, model, year, price, vin, mileage, color,
+      transmission, bodystyle, enginecylinders, condition,
+      description, listingaddress
+    } = req.body;
+
+    // Only allow update if the vehicle belongs to the user
+    const { rows } = await db.query(
+      "SELECT * FROM vehicles WHERE id = $1 AND userid = $2",
+      [vehicleId, userId]
+    );
+    if (rows.length === 0) {
+      return res.status(403).json({ error: "Not authorized" });
+    }
+
+    // Update all fields
+    await db.query(
+      `UPDATE vehicles SET
+        make = $1, model = $2, year = $3, price = $4, vin = $5, mileage = $6, color = $7,
+        transmission = $8, bodystyle = $9, enginecylinders = $10, condition = $11,
+        description = $12, listingaddress = $13
+      WHERE id = $14 AND userid = $15`,
+      [
+        make, model, year, price, vin, mileage, color,
+        transmission, bodystyle, enginecylinders, condition,
+        description, listingaddress, vehicleId, userId
+      ]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update photo caption by ID
+router.put("/vehiclephotos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { caption } = req.body;
+    await db.query("UPDATE vehiclephotos SET caption = $1 WHERE id = $2", [caption, id]);
+    res.sendStatus(204);
+  } catch (err) {
+    console.error("Error updating caption:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Set a photo as primary for a vehicle
+router.put('/api/vehicles/:vehicleId/photos/:photoId/primary', async (req, res) => {
+  const { vehicleId, photoId } = req.params;
+  try {
+    // Set all photos for this vehicle to not primary
+    await db.query(
+      'UPDATE VehiclePhotos SET IsPrimary = FALSE WHERE VehicleID = $1',
+      [vehicleId]
+    );
+    // Set the selected photo to primary
+    await db.query(
+      'UPDATE VehiclePhotos SET IsPrimary = TRUE WHERE ID = $1 AND VehicleID = $2',
+      [photoId, vehicleId]
+    );
+    res.sendStatus(200);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;

@@ -3,7 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import * as UI from "../components/ui";
 
 export default function RegisterPage() {
-  const [name, setName] = useState("");
+  // Change this:
+  // const [name, setName] = useState("");
+  // To this:
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,7 +32,10 @@ export default function RegisterPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, email, password }),
+        // Change this:
+        // body: JSON.stringify({ name, email, password }),
+        // To this:
+        body: JSON.stringify({ firstname: firstName, lastname: lastName, email, password }),
       });
 
       const data = await response.json();
@@ -58,15 +66,24 @@ export default function RegisterPage() {
           {error && <UI.Alert className="alert-error mb-4">{error}</UI.Alert>}
 
           <form onSubmit={handleSubmit}>
-            <UI.Input
-              label="Name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="John Doe"
-              required
-              className="mb-4"
-            />
+            {/* Replace the single name field with these two fields */}
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <UI.Input
+                label="First Name"
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="John"
+                required
+              />
+              <UI.Input
+                label="Last Name"
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Doe"
+              />
+            </div>
 
             <UI.Input
               label="Email"
@@ -78,6 +95,7 @@ export default function RegisterPage() {
               className="mb-4"
             />
 
+            {/* Rest of the form remains the same */}
             <UI.Input
               label="Password"
               type="password"
