@@ -6,8 +6,7 @@ const ListingCard = ({ car }) => (
     <div className="aspect-[4/3] bg-gray-200 rounded-[16px] mb-2 overflow-hidden">
       {car.photourl && (
         <img
-          // If your DB stored "uploads/foo.jpg", this yields "/uploads/foo.jpg"
-          // If it stored just "foo.jpg", you could do `/uploads/${car.photourl}`
+
           src={car.photourl.startsWith('uploads/')
             ? `/${car.photourl}`
             : `/uploads/${car.photourl}`}
