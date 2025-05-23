@@ -1,12 +1,16 @@
+// src/components/ListingCard.jsx
 import React from 'react';
 
 const ListingCard = ({ car }) => (
   <div className="border rounded-[16px] p-[30px] shadow-sm bg-white">
-    {/* Always show grey placeholder area; only render <img> when photoUrl exists */}
     <div className="aspect-[4/3] bg-gray-200 rounded-[16px] mb-2 overflow-hidden">
-      {car.photoUrl && (
+      {car.photourl && (
         <img
-          src={car.photoUrl}
+          // If your DB stored "uploads/foo.jpg", this yields "/uploads/foo.jpg"
+          // If it stored just "foo.jpg", you could do `/uploads/${car.photourl}`
+          src={car.photourl.startsWith('uploads/')
+            ? `/${car.photourl}`
+            : `/uploads/${car.photourl}`}
           alt={`${car.make} ${car.model}`}
           className="object-cover w-full h-full"
         />
@@ -17,9 +21,7 @@ const ListingCard = ({ car }) => (
       {car.make} {car.model}
     </h3>
     <p className="text-gray-700">Price: ${car.price}</p>
-    <p className="text-gray-600 text-sm">
-      Mileage: {car.mileage} km
-    </p>
+    <p className="text-gray-600 text-sm">Mileage: {car.mileage} km</p>
   </div>
 );
 
