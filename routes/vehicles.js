@@ -31,6 +31,132 @@ router.get("/my-vehicles", async (req, res) => {
   }
 });
 
+// Tiago - Beginning
+router.get('/search', async (req, res) => {
+  try {
+    const {
+      make, model, postalCode,
+      minPrice, maxPrice,
+      minYear, maxYear,
+      minMileage, maxMileage,
+      transmission, bodystyle, condition
+    } = req.query;
+
+    let query = `
+      SELECT v.*,
+        (SELECT json_agg(p.*)
+         FROM vehiclephotos p
+         WHERE p.vehicleid = v.id) as photos
+      FROM vehicles v
+      WHERE 1=1
+    `;
+    const params = [];
+
+    if (make) {
+      params.push(make);
+      query += ` AND LOWER(v.make) = LOWER($${params.length})`;
+    }
+
+    if (model) {
+      params.push(model);
+      query += ` AND LOWER(v.model) = LOWER($${params.length})`;
+    }
+
+    if (minPrice) {
+      params.push(minPrice);
+      query += ` AND v.price >= $${params.length}`;
+    }
+
+    if (maxPrice) {
+      params.push(maxPrice);
+      query += ` AND v.price <= $${params.length}`;
+    }
+
+    if (minYear) {
+      params.push(minYear);
+      query += ` AND v.year >= $${params.length}`;
+    }
+
+    if (maxYear) {
+      params.push(maxYear);
+      query += ` AND v.year <= $${params.length}`;
+    }
+
+    if (minMileage) {
+      params.push(minMileage);
+      query += ` AND v.mileage >= $${params.length}`;
+    }
+
+    if (maxMileage) {
+      params.push(maxMileage);
+      query += ` AND v.mileage <= $${params.length}`;
+    }
+
+    if (transmission) {
+      params.push(transmission);
+      query += ` AND LOWER(v.transmission) = LOWER($${params.length})`;
+    }
+
+    if (bodystyle) {
+      params.push(bodystyle);
+      query += ` AND LOWER(v.bodystyle) = LOWER($${params.length})`;
+    }
+
+    if (condition) {
+      params.push(condition);
+      query += ` AND LOWER(v.condition) = LOWER($${params.length})`;
+    }
+
+    if (postalCode && postalCode.trim()) {
+      params.push(`%${postalCode}%`);
+      query += ` AND v.listingaddress LIKE $${params.length}`;
+    }
+
+    query += ' ORDER BY v.createdon DESC';
+
+    const result = await db.query(query, params);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const result = await db.query(`
+       SELECT DISTINCT make
+       FROM vehicles
+       ORDER BY make ASC;    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching makes:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/models', async (req, res) => {
+  try {
+    const { make } = req.query;
+    if (!make) {
+      return res.json([]);
+    }
+
+    const result = await db.query(`
+      SELECT DISTINCT model
+      FROM vehicles
+      WHERE LOWER(make) = LOWER($1)
+      ORDER BY model ASC;
+    `, [make]);
+    console.log(result.rows)
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching models:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+// Tiago - End
+
 // GET /api/vehicles/:id - get a single vehicle by ID
 router.get("/:id", async (req, res) => {
   try {
