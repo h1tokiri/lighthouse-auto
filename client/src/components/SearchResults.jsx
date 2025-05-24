@@ -18,7 +18,7 @@ const SearchResults = () => {
     maxMileage: "",
     transmission: "",
     bodystyle: "",
-    condition: ""
+    condition: "",
   });
 
   // Add a new state for active filters
@@ -26,15 +26,15 @@ const SearchResults = () => {
 
   // Get search parameters from URL
   const searchParams = new URLSearchParams(window.location.search);
-  const make = searchParams.get('make');
-  const model = searchParams.get('model');
-  const postalCode = searchParams.get('postalCode');
+  const make = searchParams.get("make");
+  const model = searchParams.get("model");
+  const postalCode = searchParams.get("postalCode");
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -58,15 +58,15 @@ const SearchResults = () => {
       try {
         // Use activeFilters instead of filters
         const queryString = new URLSearchParams({
-          make: make || '',
-          model: model || '',
-          postalCode: postalCode || '',
-          ...activeFilters // Use activeFilters here
+          make: make || "",
+          model: model || "",
+          postalCode: postalCode || "",
+          ...activeFilters, // Use activeFilters here
         }).toString();
 
         const response = await fetch(`/api/vehicles/search?${queryString}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch results');
+          throw new Error("Failed to fetch results");
         }
 
         const data = await response.json();
@@ -81,13 +81,19 @@ const SearchResults = () => {
     fetchResults();
   }, [make, model, postalCode, activeFilters]); // Change dependency to activeFilters
 
-  if (loading) return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-    <div className="text-xl">Loading results...</div>
-  </div>;
+  if (loading)
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-xl">Loading results...</div>
+      </div>
+    );
 
-  if (error) return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-    <div className="text-xl text-red-600">Error: {error}</div>
-  </div>;
+  if (error)
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-xl text-red-600">Error: {error}</div>
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -216,10 +222,7 @@ const SearchResults = () => {
               </select>
             </div>
 
-            <button
-              onClick={applyFilters}
-              className="btn btn-primary w-full"
-            >
+            <button onClick={applyFilters} className="btn btn-primary w-full">
               Apply Filters
             </button>
           </div>
@@ -247,9 +250,7 @@ const SearchResults = () => {
                       year: vehicle.year,
                       price: vehicle.price,
                       mileage: vehicle.mileage,
-                      photoUrl: vehicle.photos?.[0]?.photourl ?
-                        `http://localhost:3001/${vehicle.photos[0].photourl}` :
-                        null
+                      photourl: vehicle.photos?.[0]?.photourl || null,
                     }}
                   />
                 ))}
