@@ -1,35 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useAuth } from "../contexts/AuthContext"; // <-- Add this
 
 const initialState = {
-  make: '',
-  model: '',
-  year: '',
-  price: '',
-  vin: '',
-  mileage: '',
-  color: '',
-  transmission: '',
-  bodystyle: '',
-  enginecylinders: '',
-  condition: '',
-  description: '',
-  listingaddress: '',
+  make: "",
+  model: "",
+  year: "",
+  price: "",
+  vin: "",
+  mileage: "",
+  color: "",
+  transmission: "",
+  bodystyle: "",
+  enginecylinders: "",
+  condition: "",
+  description: "",
+  listingaddress: "",
 };
 
 export default function CreateVehiclePage() {
   const [form, setForm] = useState(initialState);
   const [photos, setPhotos] = useState([]);
   const [captions, setCaptions] = useState([]);
-  const [message, setMessage] = useState('');
+  const [photoPreviews, setPhotoPreviews] = useState([]);
+  const [message, setMessage] = useState("");
+  const { user } = useAuth(); // <-- Add this
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handlePhotoChange = e => {
+  const handlePhotoChange = (e) => {
     const files = Array.from(e.target.files);
     setPhotos(files);
-    setCaptions(Array(files.length).fill(''));
+    setCaptions(Array(files.length).fill(""));
+    setPhotoPreviews(files.map((file) => URL.createObjectURL(file))); // <-- Add this
   };
 
   const handleCaptionChange = (idx, value) => {
@@ -38,17 +42,20 @@ export default function CreateVehiclePage() {
     setCaptions(newCaptions);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
+    setMessage("");
     // 1. Create vehicle
-    const res = await fetch('/api/vehicles', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/vehicles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // <-- Add this
+      },
       body: JSON.stringify(form),
     });
     if (!res.ok) {
-      setMessage('Failed to create vehicle.');
+      setMessage("Failed to create vehicle.");
       return;
     }
     const vehicle = await res.json();
@@ -57,15 +64,15 @@ export default function CreateVehiclePage() {
     if (photos.length > 0) {
       const formData = new FormData();
       photos.forEach((photo, idx) => {
-        formData.append('photos', photo);
-        formData.append('captions', captions[idx] || '');
+        formData.append("photos", photo);
+        formData.append("captions[]", captions[idx] || ""); // <-- Use array notation
       });
       await fetch(`/api/vehicles/${vehicle.id}/photos`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
     }
-    setMessage('Vehicle created successfully!');
+    setMessage("Vehicle created successfully!");
     setForm(initialState);
     setPhotos([]);
     setCaptions([]);
@@ -94,7 +101,12 @@ export default function CreateVehiclePage() {
           </div>
           <div>
             <label>VIN:</label>
-            <input name="vin" value={form.vin} onChange={handleChange} />
+            <input
+              name="vin"
+              value={form.vin}
+              onChange={handleChange}
+              placeholder="Optional" // <-- Add this line
+            />
           </div>
           <div>
             <label>Mileage:</label>
@@ -106,7 +118,12 @@ export default function CreateVehiclePage() {
           </div>
           <div>
             <label>Listing Address:</label>
-            <input name="listingaddress" value={form.listingaddress} onChange={handleChange} required />
+            <input
+              name="listingaddress"
+              value={form.listingaddress}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div>
@@ -127,7 +144,12 @@ export default function CreateVehiclePage() {
 
           <div>
             <label>Engine Cylinders:</label>
-            <select name="enginecylinders" value={form.enginecylinders} onChange={handleChange} required>
+            <select
+              name="enginecylinders"
+              value={form.enginecylinders}
+              onChange={handleChange}
+              required
+            >
               <option value="">Select</option>
               <option value="2">2</option>
               <option value="4">4</option>
@@ -162,20 +184,30 @@ export default function CreateVehiclePage() {
           <input type="file" multiple accept="image/*" onChange={handlePhotoChange} />
         </div>
         {photos.map((photo, idx) => (
-          <div key={idx} className="photo-caption-row">
-            <img
-              src={URL.createObjectURL(photo)}
-              alt={`Preview ${photo.name}`}
-              className="photo-thumb"
-              style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 6 }}
-            />
-            <span>{photo.name}</span>
+          <div key={idx} style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+            {photoPreviews[idx] && (
+              <img
+                src={photoPreviews[idx]}
+                alt={`preview-${idx}`}
+                style={{
+                  width: 80,
+                  height: 60,
+                  objectFit: "cover",
+                  marginRight: 8,
+                  borderRadius: 4,
+                  border: "1px solid #ccc",
+                }}
+              />
+            )}
             <input
               type="text"
+              value={captions[idx] || ""}
+              onChange={(e) => {
+                const newCaptions = [...captions];
+                newCaptions[idx] = e.target.value;
+                setCaptions(newCaptions);
+              }}
               placeholder="Caption"
-              value={captions[idx] || ''}
-              onChange={e => handleCaptionChange(idx, e.target.value)}
-              style={{ width: 120, marginLeft: 8 }}
             />
           </div>
         ))}

@@ -1,15 +1,15 @@
 -- Insert Users
 INSERT INTO Users (FirstName, LastName, Email, PhoneNumber, UserName, Password, Address) VALUES
-('Alice', 'Johnson', 'alice.johnson@example.com', '416-555-1001', 'alicej', 'passwordhash1', '123 Queen St W, Toronto, ON'),
-('Bob', 'Smith', 'bob.smith@example.com', '416-555-1002', 'bobsmith', 'passwordhash2', '456 King St E, Toronto, ON'),
-('Carol', 'Lee', 'carol.lee@example.com', '416-555-1003', 'caroll', 'passwordhash3', '789 Bloor St W, Toronto, ON'),
-('David', 'Nguyen', 'david.nguyen@example.com', '647-555-1004', 'davidn', 'passwordhash4', '321 Yonge St, Toronto, ON'),
-('Eva', 'Martinez', 'eva.martinez@example.com', '647-555-1005', 'evam', 'passwordhash5', '654 Parliament St, Toronto, ON'),
-('Frank', 'Brown', 'frank.brown@example.com', '416-555-1006', 'frankb', 'passwordhash6', '987 Spadina Ave, Toronto, ON'),
-('Grace', 'Davis', 'grace.davis@example.com', '647-555-1007', 'graced', 'passwordhash7', '159 College St, Toronto, ON'),
-('Henry', 'Wilson', 'henry.wilson@example.com', '416-555-1008', 'henryw', 'passwordhash8', '753 Dundas St W, Toronto, ON'),
-('Ivy', 'Taylor', 'ivy.taylor@example.com', '647-555-1009', 'ivyt', 'passwordhash9', '852 Queen St E, Toronto, ON'),
-('Jack', 'Anderson', 'jack.anderson@example.com', '416-555-1010', 'jacka', 'passwordhash10','951 King St W, Toronto, ON');
+('Alice', 'Johnson', 'user1@user.com', '416-555-1001', 'alicej', '$2a$12$Mq8.nED.wVD6vazITcw4uesozxbcw364ewe29V3meAf439NlJlAq6', '123 Queen St W, Toronto, ON'),
+('Bob', 'Smith', 'user2@user.com', '416-555-1002', 'bobsmith', '$2a$12$Mq8.nED.wVD6vazITcw4ue7lN/rgJ/1nK.vyl99e2lYKC31KcMKI2', '456 King St E, Toronto, ON'),
+('Carol', 'Lee', 'user3@user.com', '416-555-1003', 'caroll', '$2a$12$Mq8.nED.wVD6vazITcw4ueHYFLhNLv6wGb5oSH2GLLdUT8K6A.b12', '789 Bloor St W, Toronto, ON'),
+('David', 'Nguyen', 'user4@user.com', '647-555-1004', 'davidn', '$2a$12$Mq8.nED.wVD6vazITcw4ueS74r1zC0lm9rXv.mTIUTeY7A2KlMsIa', '321 Yonge St, Toronto, ON'),
+('Eva', 'Martinez', 'user5@user.com', '647-555-1005', 'evam', '$2a$12$Mq8.nED.wVD6vazITcw4ueVZehJXQaOiO1m5V2a9aT/9TsKayjT7m', '654 Parliament St, Toronto, ON'),
+('Frank', 'Brown', 'user6@user.com', '416-555-1006', 'frankb', '$2a$12$Mq8.nED.wVD6vazITcw4ue5arB2GZ39067PIbkv6HHo3ABas.7zay', '987 Spadina Ave, Toronto, ON'),
+('Grace', 'Davis', 'user7@user.com', '647-555-1007', 'graced', '$2a$12$Mq8.nED.wVD6vazITcw4ueY2jAgarvlDjTwHhEgCrJdKflPXjnhLi', '159 College St, Toronto, ON'),
+('Henry', 'Wilson', 'user8@user.com', '416-555-1008', 'henryw', '$2a$12$Mq8.nED.wVD6vazITcw4ueJS8.LFz8heJxGI/fzBz1AbyE1LbDZoi', '753 Dundas St W, Toronto, ON'),
+('Ivy', 'Taylor', 'user9@user.com', '647-555-1009', 'ivyt', '$2a$12$Mq8.nED.wVD6vazITcw4ue3e72cysp.36Da1VYzUB0BfabZ6fbuSy', '852 Queen St E, Toronto, ON'),
+('Jack', 'Anderson', 'user10@user.com', '416-555-1010', 'jacka', '$2a$12$Mq8.nED.wVD6vazITcw4ueaSrA4gdPlbNMl3HqpWgRv.mT.ryIAlS','951 King St W, Toronto, ON');
 
 -- Insert Vehicles (Linked to Users)
 INSERT INTO Vehicles (UserID, Make, Model, Year, Price, VIN, Mileage, Color, Transmission, BodyStyle, EngineCylinders, Condition, Description, ListingAddress) VALUES
