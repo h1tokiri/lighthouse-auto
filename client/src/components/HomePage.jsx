@@ -14,11 +14,11 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-base-300">
 
 
       <div className="max-w-screen-xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-blue-600 my-6">
+      <h1 className="text-3xl font-bold text-primary my-6">
           Recent Listings
         </h1>
 
@@ -36,9 +36,10 @@ export default function HomePage() {
               placeholder="Postal Code"
               className="input input-bordered w-[360px]"
             />
-            <button className="btn bg-[#3933E5] text-white w-32">
-              Search
-            </button>
+            <button className="btn w-32 bg-[#dca54d] text-black hover:bg-[#c49540] active:bg-[#b7853c]">
+  Search
+</button>
+
           </div>
         </div>
 
