@@ -252,6 +252,7 @@ const SearchResults = () => {
                       mileage: vehicle.mileage,
                       photourl: vehicle.photos?.[0]?.photourl || null,
                     }}
+                    onClick={() => navigate(`/vehicles/${vehicle.id}`)}
                   />
                 ))}
               </div>
