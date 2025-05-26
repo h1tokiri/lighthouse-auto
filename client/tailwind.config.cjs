@@ -9,14 +9,16 @@
 //   },
 // };
 
+// tailwind.config.js
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
   theme: { extend: {} },
-  plugins: [require("daisyui")], // Remove the typography plugin
+  plugins: [require("daisyui")],
   daisyui: {
-    themes: ["nord"],
+    themes: true, // <- enables ALL built-in DaisyUI themes like aqua
   },
-};
+}
+
 
 // module.exports = {
 //   content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],

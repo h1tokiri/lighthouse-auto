@@ -13,7 +13,8 @@ INSERT INTO Users (FirstName, LastName, Email, PhoneNumber, UserName, Password, 
 
 -- Insert Vehicles (Linked to Users)
 INSERT INTO Vehicles (UserID, Make, Model, Year, Price, VIN, Mileage, Color, Transmission, BodyStyle, EngineCylinders, Condition, Description, ListingAddress) VALUES
-(1, 'Toyota', 'sienna', 2015, 18999.00, 'VIN0000000001', 45000, 'White', 'Automatic', 'Sedan', 4, 'Used', 'Well-maintained, single owner, no accidents.', '100 Main St, Toronto, ON'),
+(1, 'Toyota', 'Sienna', 2015, 18999.00, 'VIN0000000001', 45000, 'White', 'Automatic', 'Sedan', 4, 'Used', 'Well-maintained, single owner, no accidents.', '100 Main St, Toronto, ON'),
+(1, 'Toyota', 'Sienna', 2007, 5500.00, 'VIN0000000999', 48500, 'Black', 'Automatic', 'Hatch', 6, 'New', 'Test description', '22 Centre Street, Calgary, AB'),
 (1, 'Audi', 'A6', 2007, 4700.00, NULL, 204000, 'silver', 'automatic', 'sedan', 6, 'fair', 'Great car, new brakes, tires and a fresh oil change. $4700/OBO/Trade', 'Parksville B.C.'),
 (1, 'BMW', '550i GT', 2002, 5000.00, NULL, 165000, 'Space Gray', 'Automatic', 'Sedan', 8, 'Good', 'Top trim package', 'Parksville B.C.'),
 (2, 'Honda', 'CRV', 2020, 20999.00, 'VIN0000000002', 30000, 'Black', 'Manual', 'Sedan', 4, 'Used', 'Sport trim with recent tire replacement.', '200 Queen St W, Toronto, ON'),

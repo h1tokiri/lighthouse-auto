@@ -36,7 +36,7 @@ import { Routes, Route } from "react-router-dom";
 import "./index.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import Navbar from "./components/Navbar";
-import HomePage from "./components/HomePage";
+import HomePage from "./components/HomePage"; // on macos homepage needs to be lowercase to work for some reason
 import DetailedListingsPage from "./pages/DetailedListingsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -44,6 +44,7 @@ import CreateVehiclePage from "./pages/CreateVehiclePage";
 import EditVehiclePage from "./pages/editVehiclePage";
 import MyVehiclesPage from "./pages/MyVehiclesPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import SearchResults from "./components/SearchResults";
 
 export default function App() {
   return (
@@ -82,6 +83,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/search" element={<SearchResults />} />
           </Routes>
         </main>
       </div>
