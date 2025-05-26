@@ -199,6 +199,7 @@ const SearchResults = () => {
   : null
 
                     }}
+                    onClick={() => navigate(`/vehicles/${vehicle.id}`)}
                   />
                 ))}
               </div>

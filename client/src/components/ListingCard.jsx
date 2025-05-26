@@ -1,11 +1,17 @@
 import React from 'react';
 
-const ListingCard = ({ car }) => {
+const ListingCard = ({ car, onClick }) => {
   const formatNumber = (num) =>
     typeof num === "number" ? num.toLocaleString() : num;
 
   return (
-    <div className="border rounded-[16px] p-[30px] shadow-sm bg-base-100">
+    <div
+      className={`border rounded-[16px] p-[30px] shadow-sm bg-base-100 cursor-pointer`}
+      onClick={onClick}
+      tabIndex={onClick ? 0 : undefined}
+      role={onClick ? "button" : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === "Enter") onClick(); } : undefined}
+    >
       <div className="aspect-[4/3] bg-neutral rounded-[16px] mb-2 overflow-hidden">
         {car.photourl && (
           <img

@@ -23,7 +23,26 @@ const MyVehiclesPage = () => {
       <div className="vehicle-cards">
         {Array.isArray(vehicles) && vehicles.length > 0 ? (
           vehicles.map((v) => (
-            <div className="vehicle-card" key={v.id}>
+            <div
+              className="vehicle-card"
+              key={v.id}
+              onClick={(e) => {
+                // Prevent navigation if Edit or Delete is clicked
+                if (
+                  e.target.closest(".edit-btn") ||
+                  e.target.closest(".delete-btn")
+                ) {
+                  return;
+                }
+                navigate(`/vehicles/${v.id}`);
+              }}
+              style={{ cursor: "pointer" }}
+              tabIndex={0}
+              role="button"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") navigate(`/vehicles/${v.id}`);
+              }}
+            >
               <img
                 src={
                   v.photourl
@@ -40,13 +59,23 @@ const MyVehiclesPage = () => {
                 <p className="vehicle-card-price">${v.price}</p>
                 <button
                   className="edit-btn"
-                  onClick={() => navigate(`/vehicles/edit/${v.id}`)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/vehicles/edit/${v.id}`);
+                  }}
+//                   onClick={() => navigate(`/vehicles/edit/${v.id}`)}
+// >>>>>>> dev
                 >
                   Edit
                 </button>
                 <button
                   className="delete-btn"
-                  onClick={() => handleDelete(v.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(v.id);
+                  }}
+//                   onClick={() => handleDelete(v.id)}
+// >>>>>>> dev
                 >
                   Delete
                 </button>
