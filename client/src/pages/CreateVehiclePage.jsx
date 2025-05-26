@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   make: "",
@@ -25,6 +26,8 @@ export default function CreateVehiclePage() {
   const [message, setMessage] = useState("");
   const { user } = useAuth();
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -36,9 +39,20 @@ export default function CreateVehiclePage() {
     setPhotoPreviews(files.map((file) => URL.createObjectURL(file)));
   };
 
+  const handleCaptionChange = (index, value) => {
+    const newCaptions = [...captions];
+    newCaptions[index] = value;
+    setCaptions(newCaptions);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+
+    const formData = {
+      ...form,
+      vin: form.vin === "" ? null : form.vin,
+    };
 
     const res = await fetch("/api/vehicles", {
       method: "POST",
@@ -46,7 +60,7 @@ export default function CreateVehiclePage() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify(form),
+      body: JSON.stringify(formData), // Send the modified data
     });
 
     if (!res.ok) {
@@ -57,14 +71,14 @@ export default function CreateVehiclePage() {
     const vehicle = await res.json();
 
     if (photos.length > 0) {
-      const formData = new FormData();
+      const formDataPhotos = new FormData();
       photos.forEach((photo, idx) => {
-        formData.append("photos", photo);
-        formData.append("captions[]", captions[idx] || "");
+        formDataPhotos.append("photos", photo);
+        formDataPhotos.append("captions[]", captions[idx] || "");
       });
       await fetch(`/api/vehicles/${vehicle.id}/photos`, {
         method: "POST",
-        body: formData,
+        body: formDataPhotos,
       });
     }
 
@@ -72,12 +86,15 @@ export default function CreateVehiclePage() {
     setForm(initialState);
     setPhotos([]);
     setCaptions([]);
+    navigate("/my-vehicles");
   };
 
   return (
     <div className="min-h-screen bg-[#2f2d2d] py-10 px-4">
-      <div className="create-vehicle-form p-6 rounded shadow max-w-3xl mx-auto" style={{ backgroundColor: "#0b0909", color: "#dca54c" }}>
-
+      <div
+        className="create-vehicle-form p-6 rounded shadow max-w-3xl mx-auto"
+        style={{ backgroundColor: "#0b0909", color: "#dca54c" }}
+      >
         <h2 className="text-2xl font-bold mb-6 text-center">Create New Vehicle</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-grid grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -162,7 +179,12 @@ export default function CreateVehiclePage() {
             </div>
             <div>
               <label>Transmission:</label>
-              <select name="transmission" value={form.transmission} onChange={handleChange} required>
+              <select
+                name="transmission"
+                value={form.transmission}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Select</option>
                 <option value="Automatic">Automatic</option>
                 <option value="Manual">Manual</option>
