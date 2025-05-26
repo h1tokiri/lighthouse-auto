@@ -18,16 +18,15 @@ const MyVehiclesPage = () => {
   };
 
   return (
-    <div className="pt-24 px-4 bg-base-100 min-h-screen">
+    <div className="pt-24 px-4 min-h-screen" style={{ backgroundColor: "#2f2d2d" }}>
       <h2 className="text-3xl font-bold text-white mb-6">My Vehicles</h2>
-      <div className="vehicle-cards">
+      <div className="vehicle-cards grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {Array.isArray(vehicles) && vehicles.length > 0 ? (
           vehicles.map((v) => (
             <div
-              className="vehicle-card"
+              className="vehicle-card rounded-lg shadow-md overflow-hidden"
               key={v.id}
               onClick={(e) => {
-                // Prevent navigation if Edit or Delete is clicked
                 if (
                   e.target.closest(".edit-btn") ||
                   e.target.closest(".delete-btn")
@@ -36,7 +35,11 @@ const MyVehiclesPage = () => {
                 }
                 navigate(`/vehicles/${v.id}`);
               }}
-              style={{ cursor: "pointer" }}
+              style={{
+                cursor: "pointer",
+                backgroundColor: "#0b0909",
+                color: "#dca54c",
+              }}
               tabIndex={0}
               role="button"
               onKeyDown={(e) => {
@@ -50,40 +53,38 @@ const MyVehiclesPage = () => {
                     : "https://via.placeholder.com/200x120?text=No+Photo"
                 }
                 alt={`${v.make} ${v.model}`}
-                className="vehicle-card-photo"
+                className="w-full h-40 object-cover"
               />
-              <div className="vehicle-card-info">
-                <h3>
+              <div className="p-4">
+                <h3 className="text-xl font-bold mb-1">
                   {v.year} {v.make} {v.model}
                 </h3>
-                <p className="vehicle-card-price">${v.price}</p>
-                <button
-                  className="edit-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/vehicles/edit/${v.id}`);
-                  }}
-//                   onClick={() => navigate(`/vehicles/edit/${v.id}`)}
-// >>>>>>> dev
-                >
-                  Edit
-                </button>
-                <button
-                  className="delete-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(v.id);
-                  }}
-//                   onClick={() => handleDelete(v.id)}
-// >>>>>>> dev
-                >
-                  Delete
-                </button>
+                <p className="vehicle-card-price mb-3 font-semibold">${v.price}</p>
+                <div className="flex justify-between">
+                  <button
+                    className="edit-btn btn btn-sm btn-outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/vehicles/edit/${v.id}`);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="delete-btn btn btn-sm btn-error text-white"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(v.id);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           ))
         ) : (
-          <p>No vehicles found or error loading vehicles.</p>
+          <p className="text-white">No vehicles found or error loading vehicles.</p>
         )}
       </div>
     </div>
