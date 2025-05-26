@@ -76,7 +76,8 @@ export default function CreateVehiclePage() {
 
   return (
     <div className="min-h-screen bg-[#2f2d2d] py-10 px-4">
-      <div className="create-vehicle-form bg-white p-6 rounded shadow max-w-3xl mx-auto">
+      <div className="create-vehicle-form p-6 rounded shadow max-w-3xl mx-auto" style={{ backgroundColor: "#0b0909", color: "#dca54c" }}>
+
         <h2 className="text-2xl font-bold mb-6 text-center">Create New Vehicle</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-grid grid grid-cols-1 sm:grid-cols-2 gap-4">
