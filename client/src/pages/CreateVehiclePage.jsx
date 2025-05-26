@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -25,6 +25,10 @@ export default function CreateVehiclePage() {
   const [photoPreviews, setPhotoPreviews] = useState([]);
   const [message, setMessage] = useState("");
   const { user } = useAuth();
+
+    useEffect(() => {
+      document.title = "Create";
+  }, []);
 
   const navigate = useNavigate();
 
@@ -60,8 +64,9 @@ export default function CreateVehiclePage() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify(formData), // Send the modified data
+      body: JSON.stringify(formData),
     });
+
 
     if (!res.ok) {
       setMessage("Failed to create vehicle.");
