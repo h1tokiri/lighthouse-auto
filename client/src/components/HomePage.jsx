@@ -296,7 +296,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-base-300">
+    <div className="min-h-screen bg-base-300 pt-10">
       <div className="max-w-screen-xl mx-auto px-4">
         <h1 className="text-3xl font-bold text-primary my-6">Recent Listings</h1>
 

@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import logo from "../assets/lighthouse-logo-loose.svg";
 
-
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -14,16 +13,17 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-base-100 text-base-content px-6 py-4 flex items-center justify-between border-b border-base-300">
+    <header className="bg-base-100 text-base-content px-6 py-3 h-20 flex items-center justify-between border-b border-base-300 fixed top-0 w-full z-50">
 
       {/* Logo */}
-      <Link to="/" className="flex items-start ml-16 -mt-[20px]">
+      <Link to="/" className="flex items-center h-24 ml-4 overflow-hidden">
   <img
     src={logo}
     alt="Lighthouse Auto Logo"
-    className="h-12 w-auto scale-[3.0]"
+    className="h-28 w-auto -mt-16 scale-110"
   />
 </Link>
+
 
 
       {/* Navigation Links */}
@@ -31,7 +31,10 @@ const Navbar = () => {
         <Link to="/" className="hover:underline">
           Home
         </Link>
-        <Link to={user && user.id ? "/vehicles/new" : "/login"} className="hover:underline">
+        <Link
+          to={user && user.id ? "/vehicles/new" : "/login"}
+          className="hover:underline"
+        >
           Create Listing
         </Link>
         {user && user.id && (
