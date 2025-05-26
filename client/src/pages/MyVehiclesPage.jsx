@@ -6,6 +6,10 @@ const MyVehiclesPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "My Vehicles";
+  }, []);
+
+  useEffect(() => {
     fetch("/api/vehicles/my-vehicles")
       .then((res) => res.json())
       .then((data) => setVehicles(data));

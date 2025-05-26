@@ -30,6 +30,10 @@ export default function EditVehiclePage() {
   const { user } = useAuth();
 
   useEffect(() => {
+    document.title = "Edit";
+  }, []);
+
+  useEffect(() => {
     fetch(`/api/vehicles/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
