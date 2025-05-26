@@ -6,19 +6,18 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Check for existing token on load
+  // Load user from localStorage
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("user");
 
-    if (token && userData) {
-      setUser(JSON.parse(userData));
+    if (token && storedUser) {
+      setUser(JSON.parse(storedUser));
     }
-
     setLoading(false);
   }, []);
 
-  // Login function
+  // Login
   const login = async (email, password) => {
     try {
       const response = await fetch("/api/auth/login", {
@@ -34,30 +33,64 @@ export function AuthProvider({ children }) {
       setUser(data.user);
 
       return data;
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      throw err;
     }
   };
 
-  // Logout function
+  // Register
+  const register = async (userData) => {
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Registration failed");
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+
+      return data.user;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  // Logout
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
   };
 
-  const value = {
-    user, // Use 'user' instead of 'currentUser'
-    loading,
-    login,
-    logout,
+  // Get headers
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+    console.log("Getting auth headers with token:", token ? "exists" : "missing");
+
+    return token
+      ? {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      : {
+          "Content-Type": "application/json",
+        };
   };
 
-  return (
-    <AuthContext.Provider value={{ user, setUser, login, logout }}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    user,
+    login,
+    register,
+    logout,
+    getAuthHeaders,
+  };
+
+  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
