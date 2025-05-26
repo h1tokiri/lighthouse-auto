@@ -18,8 +18,8 @@ const MyVehiclesPage = () => {
   };
 
   return (
-    <div>
-      <h2>My Vehicles</h2>
+    <div className="pt-24 px-4 bg-base-100 min-h-screen">
+      <h2 className="text-3xl font-bold text-white mb-6">My Vehicles</h2>
       <div className="vehicle-cards">
         {Array.isArray(vehicles) && vehicles.length > 0 ? (
           vehicles.map((v) => (
@@ -63,6 +63,8 @@ const MyVehiclesPage = () => {
                     e.stopPropagation();
                     navigate(`/vehicles/edit/${v.id}`);
                   }}
+//                   onClick={() => navigate(`/vehicles/edit/${v.id}`)}
+// >>>>>>> dev
                 >
                   Edit
                 </button>
@@ -72,6 +74,8 @@ const MyVehiclesPage = () => {
                     e.stopPropagation();
                     handleDelete(v.id);
                   }}
+//                   onClick={() => handleDelete(v.id)}
+// >>>>>>> dev
                 >
                   Delete
                 </button>

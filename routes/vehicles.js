@@ -336,7 +336,7 @@ router.get("/my-vehicles", async (req, res) => {
           WHERE vehicleid = v.id
             AND isprimary = TRUE
           LIMIT 1
-        ) AS photoUrl
+        ) AS photourl
       FROM vehicles v
       WHERE v.userid = 1
       ORDER BY v.createdon DESC;
