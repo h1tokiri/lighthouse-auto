@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "db:reset": "node bin/resetdb.js",
+    "db:legacy-reset": "node bin/resetdb.js",
+    "db:schema": "psql -U labber -d lhautos -f db/schema/tables.sql",
+    "db:seed": "psql -U labber -d lhautos -f db/seeds/seeds.sql",
+    "db:reset": "npm run db:schema && npm run db:seed",
     "server": "nodemon -L --ignore public/",
     "sass": "sass --watch --no-source-map ./styles:./public/styles",
     "local": "concurrently 'npm:server' 'npm:sass'",
@@ -14,22 +17,24 @@
     "build": "vite build",
     "preview": "vite preview",
     "dev:full": "concurrently 'npm:server' 'npm:sass' 'cd client && npm run dev'"
-
   },
   "author": "Lighthouse Labs",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "chalk": "4.1.2",
     "concurrently": "8.2.2",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.2",
     "pg": "^8.13.1",
-    "sass": "^1.83.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.0"
+    "react-router-dom": "^6.21.0",
+    "sass": "^1.83.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

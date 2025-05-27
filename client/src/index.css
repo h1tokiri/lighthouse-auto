@@ -70,15 +70,15 @@ button:focus-visible {
 @tailwind components;
 
 /* insert your daisyUI plugin + themes here */
-@plugin "daisyui" {
-  themes: all;
-}
+/* @plugin "daisyui" {
+  themes: nord;
+} */
 
 @tailwind utilities;
 
 .app-root {
   min-height: 100vh;
-  background-color: #f3f4f6; /* gray-100 */
+  /* background-color: #f3f4f6; gray-100 */
   display: flex;
   flex-direction: column;
 }
@@ -86,18 +86,304 @@ button:focus-visible {
 .app-header {
   width: 100%;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   padding: 1.5rem;
 }
 
 .app-title {
   font-size: 2.25rem;
   font-weight: bold;
-  color: #2563eb; /* blue-600 */
+  /* color: #2563eb; blue-600 */
   margin: 0;
 }
 
 .app-main {
   flex: 1;
   padding: 1.5rem;
+}
+
+.create-vehicle-form {
+  max-width: 480px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+}
+
+.create-vehicle-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.create-vehicle-form input,
+.create-vehicle-form textarea {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.description-textarea {
+  width: 100%;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.photo-caption-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.create-vehicle-form button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.detailed-listing {
+  max-width: 700px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.photo-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.vehicle-photo {
+  width: 100%;
+  max-width: 600px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.carousel-arrow {
+  background: rgba(128,128,128,0.25); /* semi-transparent gray */
+  color: #444;
+  border: none;
+  border-radius: 3px;   /* Less rounded corners */
+  width: 24px;
+  height: 60px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 2;
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s, background 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: static;
+  margin: 0 1rem;
+}
+
+.carousel-arrow.left {
+  /* No need for left positioning */
+}
+
+.carousel-arrow.right {
+  /* No need for right positioning */
+}
+
+.carousel-arrow:hover {
+  opacity: 1;
+  background: rgba(128,128,128,0.4);
+}
+
+.photo-carousel img.vehicle-photo {
+  flex-shrink: 0;
+}
+
+.photo-caption {
+  text-align: center;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.vehicle-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.vehicle-details {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+.vehicle-details li {
+  margin-bottom: 0.5rem;
+}
+
+.vehicle-form-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 2rem;
+}
+.vehicle-form .form-row,
+.vehicle-form .form-row-2 {
+  margin-bottom: 1rem;
+}
+.vehicle-form .form-row-2 {
+  display: flex;
+  gap: 1rem;
+}
+.vehicle-form .form-row-2 > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.vehicle-form label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+.vehicle-form input,
+.vehicle-form select,
+.vehicle-form textarea {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.vehicle-form select {
+  background: #f8fafc;
+  border: 1px solid #2563eb;
+  color: #222;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  min-width: 100%;
+  appearance: none;
+  outline: none;
+  transition: border 0.2s;
+}
+.vehicle-form select:focus {
+  border: 1.5px solid #1d4ed8;
+  background: #fff;
+}
+.vehicle-form textarea {
+  min-height: 60px;
+}
+.submit-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.photo-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.photo-thumb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #eee;
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: #fafafa;
+  position: relative;
+}
+.primary-badge {
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+.delete-photo-btn {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+}
+.vehicle-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.vehicle-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  width: 250px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.vehicle-card-photo {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+.vehicle-card-info {
+  padding: 1rem;
+}
+.vehicle-card-price {
+  font-weight: bold;
+  color: #2563eb;
+}
+.edit-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 1rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+.delete-btn {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+}
+.caption-input {
+  background: #fff;
+  color: #222;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
 }

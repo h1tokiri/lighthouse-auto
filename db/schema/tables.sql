@@ -13,7 +13,9 @@ CREATE TABLE Users (
     PhoneNumber VARCHAR(20),
     UserName VARCHAR(100) UNIQUE NOT NULL,
     Password VARCHAR(255) NOT NULL,
-    Address TEXT
+    Address TEXT,
+    CreatedAt TIMESTAMP DEFAULT NOW(),
+    UpdatedAt TIMESTAMP DEFAULT NOW()
 );
 
 -- Create Vehicles table
@@ -24,7 +26,7 @@ CREATE TABLE Vehicles (
     Model VARCHAR(100) NOT NULL,
     Year INT NOT NULL,
     Price DECIMAL(10,2) NOT NULL,
-    VIN VARCHAR(50) UNIQUE NOT NULL,
+    VIN VARCHAR(50) UNIQUE,
     Mileage INT NOT NULL,
     Color VARCHAR(50) NOT NULL,
     Transmission VARCHAR(50),
@@ -45,10 +47,10 @@ CREATE TABLE SavedVehicles (
 
 -- Create VehiclePhotos table
 CREATE TABLE VehiclePhotos (
-  ID SERIAL PRIMARY KEY,
-  VehicleID INT REFERENCES Vehicles(ID) ON DELETE CASCADE,
-  PhotoUrl VARCHAR(255) NOT NULL,
-  Caption TEXT,
-  UploadedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  IsPrimary BOOLEAN DEFAULT FALSE
+    ID SERIAL PRIMARY KEY,
+    VehicleID INT REFERENCES Vehicles(ID) ON DELETE CASCADE,
+    PhotoUrl VARCHAR(255) NOT NULL,
+    Caption TEXT,
+    UploadedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    IsPrimary BOOLEAN DEFAULT FALSE
 );
