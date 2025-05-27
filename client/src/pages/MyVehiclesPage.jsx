@@ -18,7 +18,7 @@ const MyVehiclesPage = () => {
       return;
     }
 
-    fetch("/api/vehicles/my-vehicles", {
+    fetch("https://lighthouse-auto.onrender.com/api/vehicles/my-vehicles", {
       headers: {
         Authorization: `Bearer ${token}`, // ✅ Send token in header
       },
@@ -40,7 +40,7 @@ const MyVehiclesPage = () => {
 
     const token = localStorage.getItem("token");
 
-    await fetch(`/api/vehicles/${id}`, {
+    await fetch(`https://lighthouse-auto.onrender.com/api/vehicles/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`, // ✅ Include token here too

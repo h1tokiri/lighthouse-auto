@@ -21,8 +21,9 @@ export default function HomePage() {
 
   const fetchModels = async (selectedMake) => {
     try {
-      const API_URL = "https://lighthouse-auto.onrender.com/api";
-      const response = await fetch(`/api/vehicles/models?make=${selectedMake}`);
+      const response = await fetch(
+        `https://lighthouse-auto.onrender.com/api/vehicles/models?make=${selectedMake}`
+      );
       const data = await response.json();
       if (Array.isArray(data)) {
         setModels(data);
@@ -38,7 +39,7 @@ export default function HomePage() {
 
   useEffect(() => {
     // Fetch makes when component mounts
-    fetch("/api/vehicles")
+    fetch("https://lighthouse-auto.onrender.com/api/vehicles")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -67,7 +68,7 @@ export default function HomePage() {
       photoUrl: "",
     }));
     setListings(dummyData);
-    fetch("/api/vehicles")
+    fetch("https://lighthouse-auto.onrender.com/api/vehicles")
       .then((res) => res.json())
       .then((data) => setListings(data))
       .catch(console.error);

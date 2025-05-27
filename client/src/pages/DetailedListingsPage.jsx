@@ -19,7 +19,7 @@ const DetailedListingsPage = () => {
   }, [id]);
 
   useEffect(() => {
-    fetch(`/api/vehicles/${id}`)
+    fetch(`https://lighthouse-auto.onrender.com/api/vehicles/${id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.photos && data.photos.length > 0) {

@@ -17,7 +17,7 @@ const SearchResults = () => {
     maxMileage: "",
     transmission: "",
     bodystyle: "",
-    condition: ""
+    condition: "",
   });
 
   const [activeFilters, setActiveFilters] = useState({});
@@ -46,10 +46,15 @@ const SearchResults = () => {
     navigate(`/search?${queryParams.toString()}`);
   };
 
-    useEffect(() => {
-    document.title = "Search Results";
-    // ...existing code...
-  }, [/* dependencies */]);
+  useEffect(
+    () => {
+      document.title = "Search Results";
+      // ...existing code...
+    },
+    [
+      /* dependencies */
+    ]
+  );
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -61,7 +66,9 @@ const SearchResults = () => {
           ...activeFilters,
         }).toString();
 
-        const response = await fetch(`/api/vehicles/search?${queryString}`);
+        const response = await fetch(
+          `https://lighthouse-auto.onrender.com/api/vehicles/search?${queryString}`
+        );
         if (!response.ok) throw new Error("Failed to fetch results");
 
         const data = await response.json();
@@ -94,7 +101,6 @@ const SearchResults = () => {
     <div className="min-h-screen" style={{ backgroundColor: "#2f2d2d" }}>
       <div className="max-w-screen-xl mx-auto px-4 py-6">
         <div className="grid grid-cols-4 gap-6">
-
           {/* Filters Sidebar */}
           <div
             className="col-span-1 p-4 rounded-lg shadow mt-20 w-full"
@@ -102,7 +108,7 @@ const SearchResults = () => {
               backgroundColor: "#0b0909",
               color: "#dca54c",
               maxWidth: "260px",
-              height: "fit-content"
+              height: "fit-content",
             }}
           >
             <h2 className="text-lg font-semibold mb-4">Filters</h2>
@@ -149,13 +155,11 @@ const SearchResults = () => {
                       </option>
                     ))}
                   {field === "bodystyle" &&
-                    ["Sedan", "SUV", "Truck", "Coupe", "Wagon", "Van"].map(
-                      (v) => (
-                        <option key={v} value={v}>
-                          {v}
-                        </option>
-                      )
-                    )}
+                    ["Sedan", "SUV", "Truck", "Coupe", "Wagon", "Van"].map((v) => (
+                      <option key={v} value={v}>
+                        {v}
+                      </option>
+                    ))}
                   {field === "condition" &&
                     ["New", "Used", "Certified Pre-Owned"].map((v) => (
                       <option key={v} value={v}>
@@ -166,21 +170,20 @@ const SearchResults = () => {
               </div>
             ))}
 
-              <button
-                onClick={applyFilters}
-                className="btn w-full text-white"
-                style={{ backgroundColor: "#2563eb" }}
-              >
-                Apply Filters
-             </button>
-
+            <button
+              onClick={applyFilters}
+              className="btn w-full text-white"
+              style={{ backgroundColor: "#2563eb" }}
+            >
+              Apply Filters
+            </button>
           </div>
 
           {/* Results Grid */}
           <div className="col-span-3">
             <h1 className="text-3xl font-bold text-blue-600 mb-6">
-              Search Results {make && `for ${make}`}{" "}
-              {model && `${model}`} {postalCode && ` near ${postalCode}`}
+              Search Results {make && `for ${make}`} {model && `${model}`}{" "}
+              {postalCode && ` near ${postalCode}`}
             </h1>
 
             {vehicles.length === 0 ? (
@@ -200,9 +203,8 @@ const SearchResults = () => {
                       price: vehicle.price,
                       mileage: vehicle.mileage,
                       photourl: vehicle.photos?.[0]?.photourl
-  ? `uploads/${vehicle.photos[0].photourl.replace(/^.*[\\/]/, '')}`
-  : null
-
+                        ? `uploads/${vehicle.photos[0].photourl.replace(/^.*[\\/]/, "")}`
+                        : null,
                     }}
                     onClick={() => navigate(`/vehicles/${vehicle.id}`)}
                   />

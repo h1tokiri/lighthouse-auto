@@ -26,8 +26,8 @@ export default function CreateVehiclePage() {
   const [message, setMessage] = useState("");
   const { user } = useAuth();
 
-    useEffect(() => {
-      document.title = "Create";
+  useEffect(() => {
+    document.title = "Create";
   }, []);
 
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ export default function CreateVehiclePage() {
       vin: form.vin === "" ? null : form.vin,
     };
 
-    const res = await fetch("/api/vehicles", {
+    const res = await fetch("https://lighthouse-auto.onrender.com/api/vehicles", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +66,6 @@ export default function CreateVehiclePage() {
       },
       body: JSON.stringify(formData),
     });
-
 
     if (!res.ok) {
       setMessage("Failed to create vehicle.");
@@ -81,7 +80,7 @@ export default function CreateVehiclePage() {
         formDataPhotos.append("photos", photo);
         formDataPhotos.append("captions[]", captions[idx] || "");
       });
-      await fetch(`/api/vehicles/${vehicle.id}/photos`, {
+      await fetch(`https://lighthouse-auto.onrender.com/api/vehicles/${vehicle.id}/photos`, {
         method: "POST",
         body: formDataPhotos,
       });
