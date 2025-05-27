@@ -15,12 +15,13 @@ export default function HomePage() {
     postalCode: "",
   });
 
-    useEffect(() => {
-      document.title = "Home Page";
+  useEffect(() => {
+    document.title = "Home Page";
   }, []);
 
   const fetchModels = async (selectedMake) => {
     try {
+      const API_URL = "https://lighthouse-auto.onrender.com/api";
       const response = await fetch(`/api/vehicles/models?make=${selectedMake}`);
       const data = await response.json();
       if (Array.isArray(data)) {
