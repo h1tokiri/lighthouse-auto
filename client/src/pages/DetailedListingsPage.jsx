@@ -7,6 +7,7 @@ const placeholder = "https://via.placeholder.com/600x400?text=Vehicle+Photo";
 const DetailedListingsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth(); // <-- get user from AuthContext
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
