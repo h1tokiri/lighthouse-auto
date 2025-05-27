@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MyVehiclesPage = () => {
+  const formatNumber = (num) => {
+    if (num === null || num === undefined || isNaN(num)) {
+      return "0";
+    }
+    return Number(num).toLocaleString();
+  };
   const [vehicles, setVehicles] = useState([]);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -90,7 +96,7 @@ const MyVehiclesPage = () => {
                 <h3 className="text-xl font-bold mb-1">
                   {v.year} {v.make} {v.model}
                 </h3>
-                <p className="vehicle-card-price mb-3 font-semibold">${v.price}</p>
+                <p className="vehicle-card-price mb-3 font-semibold">${formatNumber(v.price)}</p>
                 <div className="flex justify-between">
                   <button
                     className="edit-btn btn btn-sm btn-outline"
