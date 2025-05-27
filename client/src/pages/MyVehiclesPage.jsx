@@ -7,6 +7,10 @@ const MyVehiclesPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "My Vehicles";
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem("token"); // ✅ Get stored JWT
 
     if (!token) {
@@ -59,10 +63,7 @@ const MyVehiclesPage = () => {
               className="vehicle-card rounded-lg shadow-md overflow-hidden"
               key={v.id}
               onClick={(e) => {
-                if (
-                  e.target.closest(".edit-btn") ||
-                  e.target.closest(".delete-btn")
-                ) return;
+                if (e.target.closest(".edit-btn") || e.target.closest(".delete-btn")) return;
                 navigate(`/vehicles/${v.id}`);
               }}
               style={{
