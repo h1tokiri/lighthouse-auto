@@ -66,7 +66,7 @@ const DetailedListingsPage = () => {
             &#8592;
           </button>
           <img
-            src={`http://localhost:3001/${currentPhoto.photourl}`}
+            src={`https://lighthouse-auto.onrender.com/${currentPhoto.photourl}`}
             alt={currentPhoto.caption || "Vehicle photo"}
             className="w-full max-h-[400px] object-contain"
           />
