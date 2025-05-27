@@ -321,32 +321,29 @@ router.get("/", async (req, res) => {
 });
 
 // 2) My vehicles for current user
-router.get("/my-vehicles", async (req, res) => {
+router.get("/my-vehicles", verifyToken, async (req, res) => {
   try {
+    const userId = req.user.id;
+
     const vehicles = await db.query(`
       SELECT
-        v.id,
-        v.make,
-        v.model,
-        v.year,
-        v.price,
-        /* changed alias here from primaryPhoto → photoUrl */
+        v.id, v.make, v.model, v.year, v.price,
         (SELECT photourl
-           FROM vehiclephotos
-          WHERE vehicleid = v.id
-            AND isprimary = TRUE
-          LIMIT 1
-        ) AS photourl
+         FROM vehiclephotos
+         WHERE vehicleid = v.id AND isprimary = TRUE
+         LIMIT 1) AS photourl
       FROM vehicles v
-      WHERE v.userid = 1
+      WHERE v.userid = $1
       ORDER BY v.createdon DESC;
-    `);
+    `, [userId]);
+
     res.json(vehicles.rows);
   } catch (err) {
     console.error("Error in /my-vehicles:", err);
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Tiago - Beginning
 router.get('/search', async (req, res) => {
