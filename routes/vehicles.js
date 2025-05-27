@@ -287,6 +287,7 @@
 // module.exports = router;
 
 // routes/vehicles.js
+const verifyToken = require("../middleware/verifyToken");
 const express = require("express");
 const router = express.Router();
 const db = require("../db/connection");
@@ -325,7 +326,8 @@ router.get("/my-vehicles", verifyToken, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const vehicles = await db.query(`
+    const vehicles = await db.query(
+      `
       SELECT
         v.id, v.make, v.model, v.year, v.price,
         (SELECT photourl
@@ -335,7 +337,9 @@ router.get("/my-vehicles", verifyToken, async (req, res) => {
       FROM vehicles v
       WHERE v.userid = $1
       ORDER BY v.createdon DESC;
-    `, [userId]);
+    `,
+      [userId]
+    );
 
     res.json(vehicles.rows);
   } catch (err) {
@@ -344,16 +348,22 @@ router.get("/my-vehicles", verifyToken, async (req, res) => {
   }
 });
 
-
 // Tiago - Beginning
-router.get('/search', async (req, res) => {
+router.get("/search", async (req, res) => {
   try {
     const {
-      make, model, postalCode,
-      minPrice, maxPrice,
-      minYear, maxYear,
-      minMileage, maxMileage,
-      transmission, bodystyle, condition
+      make,
+      model,
+      postalCode,
+      minPrice,
+      maxPrice,
+      minYear,
+      maxYear,
+      minMileage,
+      maxMileage,
+      transmission,
+      bodystyle,
+      condition,
     } = req.query;
 
     let query = `
@@ -426,12 +436,12 @@ router.get('/search', async (req, res) => {
       query += ` AND v.listingaddress LIKE $${params.length}`;
     }
 
-    query += ' ORDER BY v.createdon DESC';
+    query += " ORDER BY v.createdon DESC";
 
     const result = await db.query(query, params);
     res.json(result.rows);
   } catch (err) {
-    console.error('Search error:', err);
+    console.error("Search error:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -449,23 +459,26 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get('/models', async (req, res) => {
+router.get("/models", async (req, res) => {
   try {
     const { make } = req.query;
     if (!make) {
       return res.json([]);
     }
 
-    const result = await db.query(`
+    const result = await db.query(
+      `
       SELECT DISTINCT model
       FROM vehicles
       WHERE LOWER(make) = LOWER($1)
       ORDER BY model ASC;
-    `, [make]);
-    console.log(result.rows)
+    `,
+      [make]
+    );
+    console.log(result.rows);
     res.json(result.rows);
   } catch (err) {
-    console.error('Error fetching models:', err);
+    console.error("Error fetching models:", err);
     res.status(500).json({ error: err.message });
   }
 });

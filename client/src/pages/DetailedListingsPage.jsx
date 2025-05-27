@@ -13,10 +13,6 @@ const DetailedListingsPage = () => {
   const [showContact, setShowContact] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
 
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-
   useEffect(() => {
     document.title = "Details";
   }, [id]);
@@ -84,16 +80,36 @@ const DetailedListingsPage = () => {
           {/* Vehicle details */}
           <div>
             <ul className="space-y-2">
-              <li><strong>Price:</strong> ${vehicle.price}</li>
-              <li><strong>Mileage:</strong> {vehicle.mileage} km</li>
-              <li><strong>VIN:</strong> {vehicle.vin}</li>
-              <li><strong>Color:</strong> {vehicle.color}</li>
-              <li><strong>Transmission:</strong> {vehicle.transmission}</li>
-              <li><strong>Body Style:</strong> {vehicle.bodystyle}</li>
-              <li><strong>Engine Cylinders:</strong> {vehicle.enginecylinders}</li>
-              <li><strong>Condition:</strong> {vehicle.condition}</li>
-              <li><strong>Listing Address:</strong> {vehicle.listingaddress}</li>
-              <li><strong>Created On:</strong> {new Date(vehicle.createdon).toLocaleString()}</li>
+              <li>
+                <strong>Price:</strong> ${vehicle.price}
+              </li>
+              <li>
+                <strong>Mileage:</strong> {vehicle.mileage} km
+              </li>
+              <li>
+                <strong>VIN:</strong> {vehicle.vin}
+              </li>
+              <li>
+                <strong>Color:</strong> {vehicle.color}
+              </li>
+              <li>
+                <strong>Transmission:</strong> {vehicle.transmission}
+              </li>
+              <li>
+                <strong>Body Style:</strong> {vehicle.bodystyle}
+              </li>
+              <li>
+                <strong>Engine Cylinders:</strong> {vehicle.enginecylinders}
+              </li>
+              <li>
+                <strong>Condition:</strong> {vehicle.condition}
+              </li>
+              <li>
+                <strong>Listing Address:</strong> {vehicle.listingaddress}
+              </li>
+              <li>
+                <strong>Created On:</strong> {new Date(vehicle.createdon).toLocaleString()}
+              </li>
             </ul>
           </div>
 
@@ -114,8 +130,12 @@ const DetailedListingsPage = () => {
             {showContact && (
               <div className="mb-4 p-4 bg-gray-800 rounded text-white">
                 <h3 className="font-bold mb-2">Seller Contact Information:</h3>
-                <p><strong>Email:</strong> {vehicle.user_email}</p>
-                <p><strong>Phone:</strong> {vehicle.user_phone}</p>
+                <p>
+                  <strong>Email:</strong> {vehicle.user_email}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {vehicle.user_phone}
+                </p>
               </div>
             )}
           </div>
