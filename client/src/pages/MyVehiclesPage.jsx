@@ -80,7 +80,7 @@ const MyVehiclesPage = () => {
               <img
                 src={
                   v.photourl
-                    ? `http://localhost:3001/${v.photourl}`
+                    ? `https://lighthouse-auto.onrender.com/${v.photourl}`
                     : "https://via.placeholder.com/200x120?text=No+Photo"
                 }
                 alt={`${v.make} ${v.model}`}
