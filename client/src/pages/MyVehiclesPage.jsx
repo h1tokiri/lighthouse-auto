@@ -3,27 +3,55 @@ import { useNavigate } from "react-router-dom";
 
 const MyVehiclesPage = () => {
   const [vehicles, setVehicles] = useState([]);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = "My Vehicles";
-  }, []);
+    const token = localStorage.getItem("token"); // ✅ Get stored JWT
 
-  useEffect(() => {
-    fetch("/api/vehicles/my-vehicles")
-      .then((res) => res.json())
-      .then((data) => setVehicles(data));
+    if (!token) {
+      setError("You must be logged in to view your vehicles.");
+      return;
+    }
+
+    fetch("/api/vehicles/my-vehicles", {
+      headers: {
+        Authorization: `Bearer ${token}`, // ✅ Send token in header
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Unauthorized or error fetching vehicles.");
+        return res.json();
+      })
+      .then((data) => setVehicles(data))
+      .catch((err) => {
+        console.error("Vehicle fetch failed:", err);
+        setError("Failed to load your vehicles. Please login again.");
+        setVehicles([]);
+      });
   }, []);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this vehicle?")) return;
-    await fetch(`/api/vehicles/${id}`, { method: "DELETE" });
-    setVehicles(vehicles.filter((v) => v.id !== id));
+
+    const token = localStorage.getItem("token");
+
+    await fetch(`/api/vehicles/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`, // ✅ Include token here too
+      },
+    });
+
+    setVehicles((prev) => prev.filter((v) => v.id !== id));
   };
 
   return (
     <div className="pt-24 px-4 min-h-screen" style={{ backgroundColor: "#2f2d2d" }}>
       <h2 className="text-3xl font-bold text-white mb-6">My Vehicles</h2>
+
+      {error && <p className="text-red-400 mb-4">{error}</p>}
+
       <div className="vehicle-cards grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {Array.isArray(vehicles) && vehicles.length > 0 ? (
           vehicles.map((v) => (
@@ -34,9 +62,7 @@ const MyVehiclesPage = () => {
                 if (
                   e.target.closest(".edit-btn") ||
                   e.target.closest(".delete-btn")
-                ) {
-                  return;
-                }
+                ) return;
                 navigate(`/vehicles/${v.id}`);
               }}
               style={{
@@ -87,9 +113,9 @@ const MyVehiclesPage = () => {
               </div>
             </div>
           ))
-        ) : (
-          <p className="text-white">No vehicles found or error loading vehicles.</p>
-        )}
+        ) : !error ? (
+          <p className="text-white">No vehicles found.</p>
+        ) : null}
       </div>
     </div>
   );

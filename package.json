@@ -8,12 +8,8 @@
     "start": "node server.js",
     "db:legacy-reset": "node bin/resetdb.js",
     "db:schema": "psql -U labber -d lhautos -f db/schema/tables.sql",
-    "db:seed":  "psql -U labber -d lhautos -f db/seeds/seeds.sql",
+    "db:seed": "psql -U labber -d lhautos -f db/seeds/seeds.sql",
     "db:reset": "npm run db:schema && npm run db:seed",
-
-
-
-
     "server": "nodemon -L --ignore public/",
     "sass": "sass --watch --no-source-map ./styles:./public/styles",
     "local": "concurrently 'npm:server' 'npm:sass'",

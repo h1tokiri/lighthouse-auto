@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext"; // <-- import useAuth
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const placeholder = "https://via.placeholder.com/600x400?text=Vehicle+Photo";
 
@@ -12,6 +12,10 @@ const DetailedListingsPage = () => {
   const [loading, setLoading] = useState(true);
   const [showContact, setShowContact] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     document.title = "Details";
@@ -41,12 +45,11 @@ const DetailedListingsPage = () => {
   const handlePrev = () => setPhotoIndex((prev) => (prev === 0 ? photos.length - 1 : prev - 1));
   const handleNext = () => setPhotoIndex((prev) => (prev === photos.length - 1 ? 0 : prev + 1));
 
-  // Use AuthContext for login check
-  const handleShowContact = () => {
+  const handleContactClick = () => {
     if (!user) {
-      navigate("/login");
+      navigate("/login", { state: { from: location } });
     } else {
-      setShowContact((prev) => !prev);
+      setShowContact(!showContact);
     }
   };
 
@@ -102,7 +105,7 @@ const DetailedListingsPage = () => {
             </div>
 
             <button
-              onClick={handleShowContact}
+              onClick={handleContactClick}
               className="mb-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
             >
               {showContact ? "Hide Contact Info" : "Show Contact Info"}
