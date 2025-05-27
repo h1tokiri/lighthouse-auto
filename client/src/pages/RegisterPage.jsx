@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as UI from "../components/ui";
 
@@ -15,6 +15,10 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = "Register";
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

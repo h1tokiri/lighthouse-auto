@@ -46,6 +46,11 @@ const SearchResults = () => {
     navigate(`/search?${queryParams.toString()}`);
   };
 
+    useEffect(() => {
+    document.title = "Search Results";
+    // ...existing code...
+  }, [/* dependencies */]);
+
   useEffect(() => {
     const fetchResults = async () => {
       try {

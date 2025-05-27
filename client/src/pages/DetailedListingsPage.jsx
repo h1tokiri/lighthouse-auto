@@ -6,6 +6,8 @@ const placeholder = "https://via.placeholder.com/600x400?text=Vehicle+Photo";
 
 const DetailedListingsPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth(); // <-- get user from AuthContext
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showContact, setShowContact] = useState(false);
@@ -14,6 +16,10 @@ const DetailedListingsPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    document.title = "Details";
+  }, [id]);
 
   useEffect(() => {
     fetch(`/api/vehicles/${id}`)

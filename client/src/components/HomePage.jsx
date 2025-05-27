@@ -15,6 +15,10 @@ export default function HomePage() {
     postalCode: "",
   });
 
+    useEffect(() => {
+      document.title = "Home Page";
+  }, []);
+
   const fetchModels = async (selectedMake) => {
     try {
       const response = await fetch(`/api/vehicles/models?make=${selectedMake}`);

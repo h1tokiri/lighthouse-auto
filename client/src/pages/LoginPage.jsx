@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import * as UI from "../components/ui";
@@ -15,6 +15,10 @@ export default function LoginPage() {
 
   // If redirected from a protected route, remember where to go back
   const from = location.state?.from?.pathname || "/";
+
+    useEffect(() => {
+      document.title = "Login";
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
