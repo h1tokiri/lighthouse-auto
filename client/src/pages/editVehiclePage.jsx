@@ -141,10 +141,12 @@ export default function EditVehiclePage() {
 
   return (
     <div className="create-vehicle-form">
-      <h2>Edit Vehicle</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: "#dca54c" }}>
+        Edit Vehicle
+      </h2>
 
       {/* Photo Thumbnails */}
-      <div className="photo-thumbnails">
+      <div className="photo-thumbnails mb-6 flex flex-wrap justify-center gap-4">
         {photos.map((photo, idx) => (
           <div className="photo-thumb" key={photo.id || idx}>
             {photo.photourl && (
