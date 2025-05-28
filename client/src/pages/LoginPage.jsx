@@ -16,8 +16,8 @@ export default function LoginPage() {
   // If redirected from a protected route, remember where to go back
   const from = location.state?.from?.pathname || "/";
 
-    useEffect(() => {
-      document.title = "Login";
+  useEffect(() => {
+    document.title = "Login";
   }, []);
 
   const handleSubmit = async (e) => {
@@ -39,9 +39,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-base-200 p-4">
       <UI.Card className="w-full max-w-md">
         <div className="card-body">
-          <h2 className="card-title text-2xl font-bold text-center mb-6">
-            Sign In
-          </h2>
+          <h2 className="card-title text-2xl font-bold text-center mb-6">Sign In</h2>
 
           {error && <UI.Alert className="alert-error mb-4">{error}</UI.Alert>}
 
@@ -70,6 +68,11 @@ export default function LoginPage() {
               type="submit"
               className="w-full btn-primary"
               disabled={loading}
+              style={{
+                backgroundColor: "#0b0909",
+                color: "#dca54c",
+                border: "1px solid #dca54c",
+              }}
             >
               {loading ? "Signing in..." : "Sign In"}
             </UI.Button>
