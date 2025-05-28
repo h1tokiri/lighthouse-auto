@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +26,10 @@ export default function CreateVehiclePage() {
   const [message, setMessage] = useState("");
   const { user } = useAuth();
 
+  useEffect(() => {
+    document.title = "Create";
+  }, []);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -49,44 +53,57 @@ export default function CreateVehiclePage() {
     e.preventDefault();
     setMessage("");
 
-    const formData = {
-      ...form,
-      vin: form.vin === "" ? null : form.vin,
-    };
+    try {
+      // Add this try block
+      const formData = {
+        ...form,
+        vin: form.vin === "" ? null : form.vin,
+      };
 
-    const res = await fetch("/api/vehicles", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify(formData), // Send the modified data
-    });
-
-    if (!res.ok) {
-      setMessage("Failed to create vehicle.");
-      return;
-    }
-
-    const vehicle = await res.json();
-
-    if (photos.length > 0) {
-      const formDataPhotos = new FormData();
-      photos.forEach((photo, idx) => {
-        formDataPhotos.append("photos", photo);
-        formDataPhotos.append("captions[]", captions[idx] || "");
-      });
-      await fetch(`/api/vehicles/${vehicle.id}/photos`, {
+      const res = await fetch("https://lighthouse-auto.onrender.com/api/vehicles", {
         method: "POST",
-        body: formDataPhotos,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(formData),
       });
-    }
 
-    setMessage("Vehicle created successfully!");
-    setForm(initialState);
-    setPhotos([]);
-    setCaptions([]);
-    navigate("/my-vehicles");
+      if (!res.ok) {
+        setMessage("Failed to create vehicle.");
+        return;
+      }
+
+      const vehicle = await res.json();
+
+      if (photos.length > 0) {
+        const formDataPhotos = new FormData();
+        photos.forEach((photo, idx) => {
+          formDataPhotos.append("photos", photo);
+          formDataPhotos.append("captions[]", captions[idx] || "");
+        });
+        await fetch(`https://lighthouse-auto.onrender.com/api/vehicles/${vehicle.id}/photos`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: formDataPhotos,
+        });
+      }
+
+      setMessage("Vehicle created successfully!");
+      setForm(initialState);
+      setPhotos([]);
+      setCaptions([]);
+      setPhotoPreviews([]);
+
+      setTimeout(() => {
+        navigate("/my-vehicles");
+      }, 1000);
+    } catch (error) {
+      console.error("Error creating vehicle:", error);
+      setMessage("Error creating vehicle. Please try again.");
+    }
   };
 
   return (

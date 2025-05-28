@@ -6,17 +6,20 @@ const placeholder = "https://via.placeholder.com/600x400?text=Vehicle+Photo";
 
 const DetailedListingsPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth(); // <-- get user from AuthContext
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showContact, setShowContact] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
 
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  useEffect(() => {
+    document.title = "Details";
+  }, [id]);
 
   useEffect(() => {
-    fetch(`/api/vehicles/${id}`)
+    fetch(`https://lighthouse-auto.onrender.com/api/vehicles/${id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.photos && data.photos.length > 0) {
@@ -63,7 +66,7 @@ const DetailedListingsPage = () => {
             &#8592;
           </button>
           <img
-            src={`http://localhost:3001/${currentPhoto.photourl}`}
+            src={`https://lighthouse-auto.onrender.com/${currentPhoto.photourl}`}
             alt={currentPhoto.caption || "Vehicle photo"}
             className="w-full max-h-[400px] object-contain"
           />
@@ -78,16 +81,36 @@ const DetailedListingsPage = () => {
           {/* Vehicle details */}
           <div>
             <ul className="space-y-2">
-              <li><strong>Price:</strong> ${vehicle.price}</li>
-              <li><strong>Mileage:</strong> {vehicle.mileage} km</li>
-              <li><strong>VIN:</strong> {vehicle.vin}</li>
-              <li><strong>Color:</strong> {vehicle.color}</li>
-              <li><strong>Transmission:</strong> {vehicle.transmission}</li>
-              <li><strong>Body Style:</strong> {vehicle.bodystyle}</li>
-              <li><strong>Engine Cylinders:</strong> {vehicle.enginecylinders}</li>
-              <li><strong>Condition:</strong> {vehicle.condition}</li>
-              <li><strong>Listing Address:</strong> {vehicle.listingaddress}</li>
-              <li><strong>Created On:</strong> {new Date(vehicle.createdon).toLocaleString()}</li>
+              <li>
+                <strong>Price:</strong> ${vehicle.price}
+              </li>
+              <li>
+                <strong>Mileage:</strong> {vehicle.mileage} km
+              </li>
+              <li>
+                <strong>VIN:</strong> {vehicle.vin}
+              </li>
+              <li>
+                <strong>Color:</strong> {vehicle.color}
+              </li>
+              <li>
+                <strong>Transmission:</strong> {vehicle.transmission}
+              </li>
+              <li>
+                <strong>Body Style:</strong> {vehicle.bodystyle}
+              </li>
+              <li>
+                <strong>Engine Cylinders:</strong> {vehicle.enginecylinders}
+              </li>
+              <li>
+                <strong>Condition:</strong> {vehicle.condition}
+              </li>
+              <li>
+                <strong>Listing Address:</strong> {vehicle.listingaddress}
+              </li>
+              <li>
+                <strong>Created On:</strong> {new Date(vehicle.createdon).toLocaleString()}
+              </li>
             </ul>
           </div>
 
@@ -108,8 +131,12 @@ const DetailedListingsPage = () => {
             {showContact && (
               <div className="mb-4 p-4 bg-gray-800 rounded text-white">
                 <h3 className="font-bold mb-2">Seller Contact Information:</h3>
-                <p><strong>Email:</strong> {vehicle.user_email}</p>
-                <p><strong>Phone:</strong> {vehicle.user_phone}</p>
+                <p>
+                  <strong>Email:</strong> {vehicle.user_email}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {vehicle.user_phone}
+                </p>
               </div>
             )}
           </div>

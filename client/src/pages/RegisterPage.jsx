@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as UI from "../components/ui";
 
@@ -16,6 +16,10 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = "Register";
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -27,7 +31,7 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch("https://lighthouse-auto.onrender.com/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

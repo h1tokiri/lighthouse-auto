@@ -13,24 +13,23 @@ INSERT INTO Users (FirstName, LastName, Email, PhoneNumber, UserName, Password, 
 
 -- Insert Vehicles (Linked to Users)
 INSERT INTO Vehicles (UserID, Make, Model, Year, Price, VIN, Mileage, Color, Transmission, BodyStyle, EngineCylinders, Condition, Description, ListingAddress) VALUES
-(1, 'Toyota', 'Sienna', 2015, 18999.00, 'VIN0000000001', 45000, 'White', 'Automatic', 'Sedan', 4, 'Used', 'Well-maintained, single owner, no accidents.', '100 Main St, Toronto, ON'),
-(1, 'Toyota', 'Sienna', 2007, 5500.00, 'VIN0000000999', 48500, 'Black', 'Automatic', 'Hatch', 6, 'New', 'Test description', '22 Centre Street, Calgary, AB'),
-(1, 'Audi', 'A6', 2007, 4700.00, NULL, 204000, 'silver', 'automatic', 'sedan', 6, 'fair', 'Great car, new brakes, tires and a fresh oil change. $4700/OBO/Trade', 'Parksville B.C.'),
-(1, 'BMW', '550i GT', 2002, 5000.00, NULL, 165000, 'Space Gray', 'Automatic', 'Sedan', 8, 'Good', 'Top trim package', 'Parksville B.C.'),
-(2, 'Honda', 'CRV', 2020, 20999.00, 'VIN0000000002', 30000, 'Black', 'Manual', 'Sedan', 4, 'Used', 'Sport trim with recent tire replacement.', '200 Queen St W, Toronto, ON'),
-(3, 'Ford', 'Escape', 2025, 27999.00, 'VIN0000000003', 60000, 'Blue', 'Automatic', 'Truck', 6, 'Used', 'XLT package, tow hitch included.', '300 King St E, Toronto, ON'),
-(4, 'Tesla', 'Model X', 2021, 39999.00, 'VIN0000000004', 15000, 'Red', 'Automatic', 'Sedan', 0, 'Certified Pre-Owned', 'Long range battery, Autopilot included.', '400 Yonge St, Toronto, ON'),
-(5, 'BMW', '3 Series', 2019, 31999.00, 'VIN0000000005', 25000, 'Grey', 'Automatic', 'Sedan', 4, 'Used', 'Premium package with heated seats.', '500 Bloor St W, Toronto, ON'),
-(6, 'Audi', 'A4', 2018, 28999.00, 'VIN0000000006', 35000, 'White', 'Automatic', 'Sedan', 4, 'Certified Pre-Owned', 'Includes virtual cockpit display.', '600 Spadina Ave, Toronto, ON'),
-(7, 'Mercedes-Benz', 'C300', 2020, 34999.00, 'VIN0000000007', 22000, 'Black', 'Automatic', 'Sedan', 4, 'Used', 'AMG line exterior package.', '700 Dundas St W, Toronto, ON'),
-(8, 'Subaru', 'Outback', 2019, 26999.00, 'VIN0000000008', 40000, 'Green', 'Automatic', 'Wagon', 4, 'Used', 'All-wheel drive, roof rack installed.', '800 College St, Toronto, ON'),
-(9, 'Jeep', 'Wrangler', 2016, 23999.00, 'VIN0000000009', 55000, 'Yellow', 'Manual', 'SUV', 6, 'Used', 'Lift kit and off-road tires.', '900 Queen St E, Toronto, ON'),
-(10, 'Chevrolet', 'colorado', 2021, 37999.00, 'VIN0000000010', 20000, 'Silver', 'Automatic', 'Truck', 8, 'Used', 'Crew cab with bed liner.', '1000 King St W, Toronto, ON'),
-(1, 'Nissan', 'Altima', 2018, 17999.00, 'VIN0000000011', 48000, 'Blue', 'Automatic', 'Sedan', 4, 'Used', 'Fuel efficient commuter car.', '1100 Main St, Toronto, ON'),
-(2, 'Volkswagen', 'Golf', 2019, 19999.00, 'VIN0000000012', 30000, 'White', 'Manual', 'Hatchback', 4, 'Used', 'Sport edition with sunroof.', '1200 Queen St W, Toronto, ON'),
-(3, 'Hyundai', 'Elantra', 2020, 15999.00, 'VIN0000000013', 25000, 'Red', 'Automatic', 'Sedan', 4, 'Used', 'Low mileage, excellent condition.', '1300 King St E, Toronto, ON'),
-(4, 'Kia', 'Soul', 2019, 24999.00, 'VIN0000000014', 32000, 'Black', 'Automatic', 'SUV', 6, 'Used', 'Third row seating.', '1400 Yonge St, Toronto, ON'),
-(5, 'Mazda', 'CX-30', 2018, 22999.00, 'VIN0000000015', 45000, 'Grey', 'Automatic', 'SUV', 4, 'Used', 'Premium trim with leather interior.', '1500 Bloor St W, Toronto, ON');
+(1, 'Toyota', 'Camry', 2015, 18999.00, 'VIN0000000001', 45000, 'Black', 'Automatic', 'Sedan', 4, 'Fair', 'Well-maintained, single owner, no accidents.', '100 Main St, Toronto, ON'),
+(1, 'Audi', 'A6', 2007, 5500.00, 'VIN0000000999', 48500, 'Silver', 'Automatic', 'Hatch', 6, 'Good', 'Test description', '22 Centre Street, Calgary, AB'),
+(1, 'BMW', '550i GT', 2007, 4700.00, NULL, 204000, 'Space Gray', 'automatic', 'sedan', 6, 'Fair', 'Great car, new brakes, tires and a fresh oil change. $4700/OBO/Trade', 'Parksville B.C.'),
+(1, 'Honda', 'Accord', 2018, 5000.00, NULL, 165000, 'Black', 'Automatic', 'Sedan', 8, 'Good', 'Top trim package', 'Parksville B.C.'),
+(2, 'Ford', 'F-150', 2017, 20999.00, 'VIN0000000002', 30000, 'Blue', 'Manual', 'Sedan', 4, 'Good', 'Sport trim with recent tire replacement.', '200 Queen St W, Toronto, ON'),
+(3, 'Tesla', 'Model X', 2021, 27999.00, 'VIN0000000003', 60000, 'White', 'Automatic', 'Truck', 6, 'Fair', 'Long range battery.', '300 King St E, Toronto, ON'),
+(4, 'BMW', '3 Series', 2019, 39999.00, 'VIN0000000004', 15000, 'White', 'Automatic', 'Sedan', 6, 'Good', 'Leather seats.', '400 Yonge St, Toronto, ON'),
+(5, 'Audi', 'A4', 2018, 31999.00, 'VIN0000000005', 25000, 'Grey', 'Automatic', 'Sedan', 4, 'Good', 'Premium package with heated seats.', '500 Bloor St W, Toronto, ON'),
+(6, 'Mercedes-Benz', 'C300', 2018, 28999.00, 'VIN0000000006', 35000, 'Gray', 'Automatic', 'Sedan', 4, 'Good', 'AMG line exterior package.', '600 Spadina Ave, Toronto, ON'),
+(7, 'Subaru', 'Outback', 2019, 34999.00, 'VIN0000000007', 22000, 'Blue', 'Automatic', 'Wagon', 4, 'Fair', 'All wheel drive, roof rack installed.', '700 Dundas St W, Toronto, ON'),
+(8, 'Jeep', 'Wrangler', 2019, 26999.00, 'VIN0000000008', 40000, 'Green', 'Automatic', 'Truck', 4, 'Fair', 'Lift kit and off road tires.', '800 College St, Toronto, ON'),
+(9, 'Chevrolet', 'Colorado', 2021, 43999.00, 'VIN0000000009', 55000, 'White', 'Automatic', 'Truck', 6, 'Good', 'Crew cab with bed liners.', '900 Queen St E, Toronto, ON'),
+(10, 'Nissan', 'Altima', 2018, 37999.00, 'VIN0000000010', 20000, 'Black', 'Automatic', 'Sedan', 8, 'Rough', 'Fuel efficient commuter.', '1000 King St W, Toronto, ON'),
+(1, 'Volkswagen', 'Golf', 2019, 17999.00, 'VIN0000000011', 48000, 'White', 'Automatic', 'Hatchback', 4, 'Good', 'Sport edition with sunroof.', '1100 Main St, Toronto, ON'),
+(2, 'Hyundai', 'Elantra', 2020, 15999.00, 'VIN0000000012', 30000, 'Gray', 'Manual', 'Sedan', 4, 'Good', 'Low mileage, excellent shape.', '1200 Queen St W, Toronto, ON'),
+(3, 'Kia', 'Soul', 2020, 15999.00, 'VIN0000000013', 25000, 'White', 'Automatic', 'SUV', 6, 'Fair', 'Third row seating.', '1300 King St E, Toronto, ON'),
+(4, 'Mazda', 'CX-30', 2019, 24999.00, 'VIN0000000014', 32000, 'Silver', 'Automatic', 'SUV', 6, 'Good', 'Premium leather interior.', '1400 Yonge St, Toronto, ON');
 
 -- Insert SavedVehicles (Each user saves a vehicle they don’t own)
 INSERT INTO SavedVehicles (UserID, VehicleID) VALUES

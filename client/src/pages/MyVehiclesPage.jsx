@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MyVehiclesPage = () => {
+  const formatNumber = (num) => {
+    if (num === null || num === undefined || isNaN(num)) {
+      return "0";
+    }
+    return Number(num).toLocaleString();
+  };
   const [vehicles, setVehicles] = useState([]);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -13,26 +19,31 @@ const MyVehiclesPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("token"); // ✅ Get stored JWT
 
+
     if (!token) {
       setError("You must be logged in to view your vehicles.");
+      setVehicles([]);
       return;
     }
 
-    fetch("/api/vehicles/my-vehicles", {
-      headers: {
-        Authorization: `Bearer ${token}`, // ✅ Send token in header
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Unauthorized or error fetching vehicles.");
-        return res.json();
-      })
-      .then((data) => setVehicles(data))
-      .catch((err) => {
-        console.error("Vehicle fetch failed:", err);
-        setError("Failed to load your vehicles. Please login again.");
-        setVehicles([]);
+    try {
+      const res = await fetch("https://lighthouse-auto.onrender.com/api/vehicles/my-vehicles", {
+        headers: { Authorization: `Bearer ${token}` },
       });
+
+      if (!res.ok) throw new Error("Unauthorized or error fetching vehicles.");
+      const data = await res.json();
+      setVehicles(data);
+      setError("");
+    } catch (err) {
+      console.error("Vehicle fetch failed:", err);
+      setError("Failed to load your vehicles. Please login again.");
+      setVehicles([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchVehicles();
   }, []);
 
   const handleDelete = async (id) => {
@@ -40,14 +51,23 @@ const MyVehiclesPage = () => {
 
     const token = localStorage.getItem("token");
 
-    await fetch(`/api/vehicles/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`, // ✅ Include token here too
-      },
-    });
+    try {
+      const res = await fetch(`https://lighthouse-auto.onrender.com/api/vehicles/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    setVehicles((prev) => prev.filter((v) => v.id !== id));
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to delete vehicle.");
+      }
+
+      // Refresh vehicle list after deletion
+      await fetchVehicles();
+    } catch (err) {
+      console.error("Delete failed:", err);
+      setError("Could not delete vehicle. Try again later.");
+    }
   };
 
   return (
@@ -63,10 +83,7 @@ const MyVehiclesPage = () => {
               className="vehicle-card rounded-lg shadow-md overflow-hidden"
               key={v.id}
               onClick={(e) => {
-                if (
-                  e.target.closest(".edit-btn") ||
-                  e.target.closest(".delete-btn")
-                ) return;
+                if (e.target.closest(".edit-btn") || e.target.closest(".delete-btn")) return;
                 navigate(`/vehicles/${v.id}`);
               }}
               style={{
@@ -83,7 +100,7 @@ const MyVehiclesPage = () => {
               <img
                 src={
                   v.photourl
-                    ? `http://localhost:3001/${v.photourl}`
+                    ? `https://lighthouse-auto.onrender.com/${v.photourl}`
                     : "https://via.placeholder.com/200x120?text=No+Photo"
                 }
                 alt={`${v.make} ${v.model}`}
@@ -93,7 +110,7 @@ const MyVehiclesPage = () => {
                 <h3 className="text-xl font-bold mb-1">
                   {v.year} {v.make} {v.model}
                 </h3>
-                <p className="vehicle-card-price mb-3 font-semibold">${v.price}</p>
+                <p className="vehicle-card-price mb-3 font-semibold">${formatNumber(v.price)}</p>
                 <div className="flex justify-between">
                   <button
                     className="edit-btn btn btn-sm btn-outline"
