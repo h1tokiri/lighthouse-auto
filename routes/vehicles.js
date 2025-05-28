@@ -143,6 +143,35 @@ router.get("/search", async (req, res) => {
   }
 });
 
+// models populate
+// Add this route to get models for a specific make
+router.get("/models", async (req, res) => {
+  try {
+    const { make } = req.query;
+
+    if (!make) {
+      return res.status(400).json({ error: "Make parameter is required" });
+    }
+
+    const query = `
+      SELECT DISTINCT model
+      FROM vehicles
+      WHERE LOWER(make) = LOWER($1)
+      ORDER BY model ASC
+    `;
+
+    const result = await db.query(query, [make]);
+
+    // Return array of model objects to match your frontend expectation
+    const models = result.rows.map((row) => ({ model: row.model }));
+
+    res.json(models);
+  } catch (err) {
+    console.error("Error in /models route:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // 3) Vehicle detail (with all photos & seller info)
 router.get("/:id", async (req, res) => {
   try {
