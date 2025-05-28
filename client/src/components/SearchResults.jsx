@@ -202,9 +202,7 @@ const SearchResults = () => {
                       year: vehicle.year,
                       price: vehicle.price,
                       mileage: vehicle.mileage,
-                      photourl: vehicle.photos?.[0]?.photourl
-                        ? `uploads/${vehicle.photos[0].photourl.replace(/^.*[\\/]/, "")}`
-                        : null,
+                      photourl: vehicle.photourl,
                     }}
                     onClick={() => navigate(`/vehicles/${vehicle.id}`)}
                   />
