@@ -149,7 +149,7 @@ export default function EditVehiclePage() {
           <div className="photo-thumb" key={photo.id || idx}>
             {photo.photourl && (
               <img
-                src={`http://localhost:3001/${photo.photourl}`}
+                src={`http://lighthouse-auto.onrender.com/${photo.photourl}`}
                 alt={`vehicle-${idx}`}
                 style={{
                   width: 160,
