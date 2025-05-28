@@ -1,7 +1,14 @@
 import React from "react";
 
 const ListingCard = ({ car, onClick }) => {
-  const formatNumber = (num) => (typeof num === "number" ? num.toLocaleString() : num);
+  // const formatNumber = (num) => (typeof num === "number" ? num.toLocaleString() : num);
+
+  const formatNumber = (num) => {
+    if (num === null || num === undefined || isNaN(num)) {
+      return "0";
+    }
+    return Number(num).toLocaleString();
+  };
 
   return (
     <div
