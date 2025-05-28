@@ -16,29 +16,33 @@ const MyVehiclesPage = () => {
     document.title = "My Vehicles";
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token"); // ✅ Get stored JWT
+  const fetchVehicles = async () => {
+    const token = localStorage.getItem("token");
 
     if (!token) {
       setError("You must be logged in to view your vehicles.");
+      setVehicles([]);
       return;
     }
 
-    fetch("https://lighthouse-auto.onrender.com/api/vehicles/my-vehicles", {
-      headers: {
-        Authorization: `Bearer ${token}`, // ✅ Send token in header
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Unauthorized or error fetching vehicles.");
-        return res.json();
-      })
-      .then((data) => setVehicles(data))
-      .catch((err) => {
-        console.error("Vehicle fetch failed:", err);
-        setError("Failed to load your vehicles. Please login again.");
-        setVehicles([]);
+    try {
+      const res = await fetch("https://lighthouse-auto.onrender.com/api/vehicles/my-vehicles", {
+        headers: { Authorization: `Bearer ${token}` },
       });
+
+      if (!res.ok) throw new Error("Unauthorized or error fetching vehicles.");
+      const data = await res.json();
+      setVehicles(data);
+      setError("");
+    } catch (err) {
+      console.error("Vehicle fetch failed:", err);
+      setError("Failed to load your vehicles. Please login again.");
+      setVehicles([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchVehicles();
   }, []);
 
   const handleDelete = async (id) => {
@@ -46,14 +50,23 @@ const MyVehiclesPage = () => {
 
     const token = localStorage.getItem("token");
 
-    await fetch(`https://lighthouse-auto.onrender.com/api/vehicles/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`, // ✅ Include token here too
-      },
-    });
+    try {
+      const res = await fetch(`https://lighthouse-auto.onrender.com/api/vehicles/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    setVehicles((prev) => prev.filter((v) => v.id !== id));
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to delete vehicle.");
+      }
+
+      // Refresh vehicle list after deletion
+      await fetchVehicles();
+    } catch (err) {
+      console.error("Delete failed:", err);
+      setError("Could not delete vehicle. Try again later.");
+    }
   };
 
   return (
