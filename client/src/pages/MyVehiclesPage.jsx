@@ -16,8 +16,9 @@ const MyVehiclesPage = () => {
     document.title = "My Vehicles";
   }, []);
 
-  const fetchVehicles = async () => {
-    const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // ✅ Get stored JWT
+
 
     if (!token) {
       setError("You must be logged in to view your vehicles.");

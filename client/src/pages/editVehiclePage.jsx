@@ -228,19 +228,22 @@ export default function EditVehiclePage() {
                   placeholder="Caption"
                   style={{ marginLeft: 8 }}
                 />
+              )}
+              {photo.isprimary && <span className="primary-badge block text-xs mt-1 text-center">Primary</span>}
+              <input
+                className="caption-input mt-2 mb-2 p-1 rounded w-full"
+                type="text"
+                value={editingCaptions[photo.id] !== undefined ? editingCaptions[photo.id] : photo.caption || ""}
+                onChange={(e) => handleCaptionChange(photo.id, e.target.value)}
+                style={{ backgroundColor: '#1a1a1a', color: '#f5f5f5', border: '1px solid #444' }}
+              />
+              <div className="flex justify-center gap-2">
+                <button type="button" className="btn btn-sm btn-primary" onClick={() => handleUpdateCaption(photo.id)}>Update Caption</button>
+                <button type="button" className="btn btn-sm btn-error text-white" onClick={() => handlePhotoDelete(photo.id)}>Delete Photo</button>
               </div>
-            ))}
-            <button
-              type="button"
-              className="edit-btn"
-              onClick={handleUploadPhotos}
-              style={{ marginTop: 8 }}
-            >
-              Upload Photos
-            </button>
-          </div>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
 
       <form onSubmit={handleSubmit}>
         <div className="form-grid">
@@ -323,27 +326,13 @@ export default function EditVehiclePage() {
               <option value="Does Not Run">Does Not Run</option>
             </select>
           </div>
-          <div>
-            <label>Transmission:</label>
-            <select name="transmission" value={form.transmission} onChange={handleChange} required>
-              <option value="">Select</option>
-              <option value="Automatic">Automatic</option>
-              <option value="Manual">Manual</option>
-            </select>
+          <div className="mt-4">
+            <label>Description:</label>
+            <textarea name="description" value={form.description} onChange={handleChange} rows={6} className="w-full border p-2 rounded" />
           </div>
-        </div>
-        <div>
-          <label>Description:</label>
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            rows={6}
-            className="description-textarea"
-          />
-        </div>
-        <button type="submit">Update Vehicle</button>
-      </form>
+          <button type="submit" className="btn btn-primary mt-6">Update Vehicle</button>
+        </form>
+      </div>
     </div>
   );
 }
