@@ -44,6 +44,105 @@ router.get("/my-vehicles", verifyToken, async (req, res) => {
   }
 });
 
+// Add this BEFORE the /:id route to avoid conflicts
+router.get("/search", async (req, res) => {
+  try {
+    const {
+      make,
+      model,
+      postalCode,
+      minPrice,
+      maxPrice,
+      minYear,
+      maxYear,
+      minMileage,
+      maxMileage,
+      transmission,
+      bodystyle,
+      condition,
+    } = req.query;
+
+    let query = `
+      SELECT
+        v.id, v.make, v.model, v.year, v.price, v.mileage, v.color,
+        v.transmission, v.bodystyle, v.condition, v.listingaddress,
+        (SELECT photourl FROM vehiclephotos WHERE vehicleid = v.id AND isprimary = TRUE LIMIT 1) AS photourl
+      FROM vehicles v
+      WHERE 1=1
+    `;
+
+    const params = [];
+    let paramIndex = 1;
+
+    // Add search filters
+    if (make) {
+      query += ` AND LOWER(v.make) LIKE LOWER($${paramIndex})`;
+      params.push(`%${make}%`);
+      paramIndex++;
+    }
+
+    if (model) {
+      query += ` AND LOWER(v.model) LIKE LOWER($${paramIndex})`;
+      params.push(`%${model}%`);
+      paramIndex++;
+    }
+
+    if (minPrice) {
+      query += ` AND v.price >= $${paramIndex}`;
+      params.push(parseFloat(minPrice));
+      paramIndex++;
+    }
+
+    if (maxPrice) {
+      query += ` AND v.price <= $${paramIndex}`;
+      params.push(parseFloat(maxPrice));
+      paramIndex++;
+    }
+
+    if (minYear) {
+      query += ` AND v.year >= $${paramIndex}`;
+      params.push(parseInt(minYear));
+      paramIndex++;
+    }
+
+    if (maxYear) {
+      query += ` AND v.year <= $${paramIndex}`;
+      params.push(parseInt(maxYear));
+      paramIndex++;
+    }
+
+    if (transmission) {
+      query += ` AND LOWER(v.transmission) = LOWER($${paramIndex})`;
+      params.push(transmission);
+      paramIndex++;
+    }
+
+    if (bodystyle) {
+      query += ` AND LOWER(v.bodystyle) = LOWER($${paramIndex})`;
+      params.push(bodystyle);
+      paramIndex++;
+    }
+
+    if (condition) {
+      query += ` AND LOWER(v.condition) = LOWER($${paramIndex})`;
+      params.push(condition);
+      paramIndex++;
+    }
+
+    query += ` ORDER BY v.createdon DESC`;
+
+    console.log("Search query:", query);
+    console.log("Search params:", params);
+
+    const result = await db.query(query, params);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error in search route:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // 3) Vehicle detail (with all photos & seller info)
 router.get("/:id", async (req, res) => {
   try {
@@ -77,8 +176,19 @@ router.post("/", async (req, res) => {
   try {
     const userid = 1; // Hardcoded for now
     const {
-      make, model, year, price, vin, mileage, color, transmission,
-      bodystyle, enginecylinders, condition, description, listingaddress,
+      make,
+      model,
+      year,
+      price,
+      vin,
+      mileage,
+      color,
+      transmission,
+      bodystyle,
+      enginecylinders,
+      condition,
+      description,
+      listingaddress,
     } = req.body;
 
     const result = await db.query(
@@ -89,9 +199,20 @@ router.post("/", async (req, res) => {
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
        RETURNING *;`,
       [
-        userid, make, model, year, price, vin, mileage, color,
-        transmission, bodystyle, enginecylinders, condition,
-        description, listingaddress,
+        userid,
+        make,
+        model,
+        year,
+        price,
+        vin,
+        mileage,
+        color,
+        transmission,
+        bodystyle,
+        enginecylinders,
+        condition,
+        description,
+        listingaddress,
       ]
     );
     res.status(201).json(result.rows[0]);
