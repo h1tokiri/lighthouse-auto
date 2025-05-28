@@ -53,54 +53,58 @@ export default function CreateVehiclePage() {
     e.preventDefault();
     setMessage("");
 
-    const formData = {
-      ...form,
-      vin: form.vin === "" ? null : form.vin,
-    };
+    try {
+      // Add this try block
+      const formData = {
+        ...form,
+        vin: form.vin === "" ? null : form.vin,
+      };
 
-    const res = await fetch("https://lighthouse-auto.onrender.com/api/vehicles", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (!res.ok) {
-      setMessage("Failed to create vehicle.");
-      return;
-    }
-
-    const vehicle = await res.json();
-
-    if (photos.length > 0) {
-      const formDataPhotos = new FormData();
-      photos.forEach((photo, idx) => {
-        formDataPhotos.append("photos", photo);
-        formDataPhotos.append("captions[]", captions[idx] || "");
-      });
-      await fetch(`https://lighthouse-auto.onrender.com/api/vehicles/${vehicle.id}/photos`, {
+      const res = await fetch("https://lighthouse-auto.onrender.com/api/vehicles", {
         method: "POST",
-        body: formDataPhotos,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(formData),
       });
+
+      if (!res.ok) {
+        setMessage("Failed to create vehicle.");
+        return;
+      }
+
+      const vehicle = await res.json();
+
+      if (photos.length > 0) {
+        const formDataPhotos = new FormData();
+        photos.forEach((photo, idx) => {
+          formDataPhotos.append("photos", photo);
+          formDataPhotos.append("captions[]", captions[idx] || "");
+        });
+        await fetch(`https://lighthouse-auto.onrender.com/api/vehicles/${vehicle.id}/photos`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: formDataPhotos,
+        });
+      }
+
+      setMessage("Vehicle created successfully!");
+      setForm(initialState);
+      setPhotos([]);
+      setCaptions([]);
+      setPhotoPreviews([]);
+
+      setTimeout(() => {
+        navigate("/my-vehicles");
+      }, 1000);
+    } catch (error) {
+      console.error("Error creating vehicle:", error);
+      setMessage("Error creating vehicle. Please try again.");
     }
-
-    setMessage("Vehicle created successfully!");
-    setForm(initialState);
-    setPhotos([]);
-    setCaptions([]);
-    setPhotoPreviews([]);
-
-    setTimeout(() => {
-      navigate("/my-vehicles");
-    }, 1000);
-
-  } catch (error) {
-    console.error("Error creating vehicle:", error);
-    setMessage("Error creating vehicle. Please try again.");
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-[#2f2d2d] py-10 px-4">
