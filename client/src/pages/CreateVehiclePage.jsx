@@ -90,8 +90,17 @@ export default function CreateVehiclePage() {
     setForm(initialState);
     setPhotos([]);
     setCaptions([]);
-    navigate("/my-vehicles");
-  };
+    setPhotoPreviews([]);
+
+    setTimeout(() => {
+      navigate("/my-vehicles");
+    }, 1000);
+
+  } catch (error) {
+    console.error("Error creating vehicle:", error);
+    setMessage("Error creating vehicle. Please try again.");
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#2f2d2d] py-10 px-4">
