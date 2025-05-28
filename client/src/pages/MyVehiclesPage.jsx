@@ -7,6 +7,10 @@ const MyVehiclesPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "My Vehicles";
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem("token"); // ✅ Get stored JWT
 
     if (!token) {

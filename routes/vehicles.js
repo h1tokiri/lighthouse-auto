@@ -292,6 +292,8 @@ const router = express.Router();
 const db = require("../db/connection");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
+const verifyToken = require("../middleware/verifyToken");
+
 
 // 1) NEW: List 10 most recent vehicles with primary photo
 router.get("/", async (req, res) => {

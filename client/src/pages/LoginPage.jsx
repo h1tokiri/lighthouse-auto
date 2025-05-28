@@ -64,7 +64,7 @@ export default function LoginPage() {
 
             <UI.Button
               type="submit"
-              className="w-full btn-primary"
+              className="w-full btn-primary text-[#dca54c]"
               disabled={loading}
             >
               {loading ? "Signing in..." : "Sign In"}
